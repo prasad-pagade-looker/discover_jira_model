@@ -18,7 +18,7 @@ explore: issue {
 }
 
 
-explore: project_infinity {
+explore: infinity {
 }
 
 explore: sprint {
