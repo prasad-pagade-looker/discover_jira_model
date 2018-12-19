@@ -17,6 +17,10 @@ explore: issue {
   hidden: yes
 }
 
+
+explore: project_infinity {
+}
+
 explore: sprint {
   join: issue_sprint {
     type:  left_outer
