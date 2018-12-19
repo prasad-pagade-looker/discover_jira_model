@@ -61,7 +61,7 @@ view: infinity {
     type: string
     link: {
       label: "Go to JIRA"
-      url: "https://discoverorg.atlassian.net/browse/q={{infinity.key.value}}"
+      url: "https://discoverorg.atlassian.net/browse/{{infinity.key.value}}"
         }
     sql: ${TABLE}."SUMMARY" ;;
   }
