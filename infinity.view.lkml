@@ -38,6 +38,7 @@ view: infinity {
       LEFT OUTER join CONNECTORS.JIRA.SPRINT as sprint on i_sprint."SPRINT_ID" = sprint."ID"
       LEFT OUTER JOIN CONNECTORS.JIRA.ISSUE_CORPORATE_OBJECTIVES as ico on i."ID" = ico."ISSUE_ID"
       LEFT OUTER JOIN CONNECTORS.JIRA.FIELD_OPTION as fo on ico."FIELD_OPTION_ID" = fo."ID"
+      WHERE P."NAME" LIKE 'INF%'
 
       GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20
                 ,21,22,23,24
