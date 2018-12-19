@@ -1,0 +1,12 @@
+connection: "snowflakedb"
+
+# include all the views
+include: "project_infinity.view"
+
+
+datagroup: fivetran_datagroup {
+  sql_trigger: SELECT max(date_trunc('minute', done)) FROM jira.fivetran_audit ;;
+  max_cache_age: "24 hours"
+}
+
+persist_with: fivetran_datagroup
