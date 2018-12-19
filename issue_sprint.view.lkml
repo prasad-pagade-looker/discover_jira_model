@@ -1,5 +1,5 @@
   view: issue_sprint {
-    sql_table_name: JIRA.ISSUE_SPRINT ;;
+    sql_table_name: connectors.JIRA.ISSUE_SPRINT ;;
 
     dimension_group: _fivetran_synced {
       type: time

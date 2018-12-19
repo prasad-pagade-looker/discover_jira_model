@@ -1,5 +1,5 @@
   view: component {
-    sql_table_name: JIRA.COMPONENT ;;
+    sql_table_name: connectors.JIRA.COMPONENT ;;
 
     dimension: id {
       primary_key: yes

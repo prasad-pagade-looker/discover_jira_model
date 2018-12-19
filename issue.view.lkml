@@ -1,5 +1,5 @@
 view: issue {
-  sql_table_name: jira.issue ;;
+  sql_table_name: connectors.jira.issue ;;
 
   dimension: id {
     primary_key: yes
@@ -21,10 +21,10 @@ view: issue {
     sql: ${TABLE}._fivetran_synced ;;
   }
 
-  dimension: external_issue_id {
-    type: string
-    sql: ${TABLE}.external_issue_id ;;
-  }
+#   dimension: external_issue_id {
+#     type: string
+#     sql: ${TABLE}.external_issue_id ;;
+#   }
 
   dimension: _original_estimate {
     type: number

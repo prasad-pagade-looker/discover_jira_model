@@ -10,11 +10,13 @@
 # If any of the fields in the issue table aren't used as part of
 # your business process, set them to "hidden: yes" to limit what the
 # end user has to work with to only what they need.
-# Make liberal user of "group_label" to organize the data in a way
+# Make liberal use of "group_label" to organize the data in a way
 # that is meaningful for your users.  There can be lots of columns
 # so make them as easy to work woth as possible.
 
-explore: issue_extended {}
+## Need to fix this for Discover. Doesn't fit in directly and ask Erik what fields he wants to see from issue here
+
+
 
 view: issue_extended {
   derived_table: {
@@ -58,22 +60,22 @@ view: issue_extended {
                ,LISTAGG(version.name, ', ') as fix_version_list
                ,LISTAGG(issue_link.related_issue_id, ', ') as related_issues_list
 
-         FROM jira.issue issue
+         FROM connectors.jira.issue issue
          -- Single value fields.
          -- If the field contains an id, look it up
          -- in the appropriate table.  Many of them will
          -- be in the field_option table.  The
          -- field_option table must have a unique alias
          -- each time it is referenced
-         LEFT OUTER JOIN jira.field_option department -- unique alias
+         LEFT OUTER JOIN connectors.jira.field_option department -- unique alias
             ON issue.department = department.id
-         LEFT OUTER JOIN jira.project
+         LEFT OUTER JOIN connectors.jira.project
             ON issue.project = project.id
-         LEFT OUTER JOIN jira.field_option severity -- unique alias
+         LEFT OUTER JOIN connectors.jira.field_option severity -- unique alias
             ON issue.severity = severity.id
-         LEFT OUTER JOIN jira.status
+         LEFT OUTER JOIN connectors.jira.status
             ON issue.status = status.id
-         LEFT OUTER JOIN jira.issue_type
+         LEFT OUTER JOIN connectors.jira.issue_type
             ON issue.issue_type = issue_type.id
 
          -- Multi-value fields
@@ -105,7 +107,7 @@ view: issue_extended {
 
         ;;
 
-    indexes: ["id"]
+    #indexes: ["id"]
   }
 
   dimension: id {

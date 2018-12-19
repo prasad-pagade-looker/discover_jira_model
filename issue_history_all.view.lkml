@@ -10,29 +10,16 @@
 
 view: issue_history_all {
   derived_table: {
-    datagroup_trigger: fivetran_datagroup
+    #datagroup_trigger: fivetran_datagroup Currently there is no scratch schema
     sql: -- History tables for single value fields
-      select ph."issue_id", ph."time", p."name", 'Project' as "changed" from jira.issue_project_history ph
-      LEFT OUTER JOIN jira.project p on ph.project_id = p.id
+      select ph.issue_id, ph.time, p.name, 'Project' as changed from connectors.jira.issue_project_history ph
+      LEFT OUTER JOIN connectors.jira.project p on ph.project_id = p.id
       UNION
-      select sh."issue_id", sh."time", fo."name", 'Severity' as "changed" from jira.issue_severity_history sh
-      LEFT OUTER JOIN jira.field_option fo on sh.field_option_id = fo.id
-      UNION
-      select toh."issue_id", toh."time", u."name", 'Technical Owner' as "changed" from jira.issue_technical_owner_history toh
-      LEFT OUTER JOIN jira.user u on toh.user_id = u.id
-      -- History tables for multi-value fields
-      UNION
-      select bh."issue_id", bh."time", bh."value", 'Browser History' as "changed" from jira.issue_browser_s_history bh
-      UNION
-      select cih."issue_id", cih."time", cih."value", 'Customer Impacted' as "changed" from jira.issue_customer_s_impacted_history cih
-      UNION
-      select erh."issue_id", erh."time", fo."name", 'Op Equipment Request' as "changed" from jira.issue_op_equipment_request_history erh
-      LEFT OUTER JOIN jira.field_option fo on erh.field_option_id = fo.id
-      UNION
-      select trh."issue_id", trh."time", fo."name", 'Op Tools Request' as "changed" from jira.issue_op_tools_request_history trh
-      LEFT OUTER JOIN jira.field_option fo on trh.field_option_id = fo.id
+      select sh.issue_id, sh.time, fo.name, 'Severity' as changed from connectors.jira.issue_severity_history sh
+      LEFT OUTER JOIN connectors.jira.field_option fo on sh.field_option_id = fo.id
+
        ;;
-    indexes: ["issue_id", "time"]
+    #indexes: ["issue_id", "time"]
     # For Redshift only
     #distribution_style: all
   }
@@ -54,7 +41,7 @@ view: issue_history_all {
 
   dimension: value {
     type: string
-    sql: ${TABLE}.value ;;
+    sql: ${TABLE}.name ;;
   }
 
   dimension: changed {

@@ -1,5 +1,5 @@
   view: board {
-    sql_table_name: JIRA.BOARD ;;
+    sql_table_name: connectors.JIRA.BOARD ;;
 
     dimension: id {
       primary_key: yes

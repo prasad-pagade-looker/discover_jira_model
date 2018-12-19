@@ -78,8 +78,8 @@
     type: field_filter
     default_value: 3 months
     model: jira_block
-    explore: issue_extended
-    field: issue_extended.created_month
+    explore: issue_extended_jira
+    field: issue_extended_jira.created_month
     listens_to_filters: []
     allow_multiple_values: true
     required: false

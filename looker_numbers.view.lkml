@@ -1,4 +1,4 @@
-explore: looker_numbers {}
+#explore: looker_numbers {}
 
 view: looker_numbers {
 #   Numbers table used for sprint burndown
@@ -30,10 +30,9 @@ derived_table: {
         (SELECT 0 as n UNION SELECT 1) p10
 
  ;;
-  indexes: ["number"]
+
   persist_for: "24 hours"
-  # For Redshift only
-  #distribution_style: all
+
 }
 
 measure: count {

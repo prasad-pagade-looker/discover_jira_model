@@ -1,5 +1,5 @@
       view: sprint {
-        sql_table_name: JIRA.SPRINT ;;
+        sql_table_name: connectors.JIRA.SPRINT ;;
 
         dimension: id {
           primary_key: yes

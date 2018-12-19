@@ -1,5 +1,5 @@
 view: issue_custom_single_user_history {
-  sql_table_name: JIRA.ISSUE_CUSTOM_SINGLE_USER_HISTORY ;;
+  sql_table_name: connectors.JIRA.ISSUE_CUSTOM_SINGLE_USER_HISTORY ;; # This table does not exist in the DB
 
   dimension: _fivetran_synced {
     type: string

@@ -1,4 +1,4 @@
-connection: "fivetran_looker_blocks_demo"
+connection: "snowflakedb"
 
 # include all the views
 include: "*.view"
@@ -12,6 +12,10 @@ datagroup: fivetran_datagroup {
 }
 
 persist_with: fivetran_datagroup
+
+explore: issue {
+  hidden: yes
+}
 
 explore: sprint {
   join: issue_sprint {
@@ -29,15 +33,22 @@ explore: sprint {
 
 # Update based on how you are associating versions to
 explore: version {
+  hidden: yes
   join: issue_fix_version {
     type: left_outer
     relationship: one_to_many
     sql_on: ${version.id} = ${issue_fix_version.version_id} ;;
   }
-  join: issue {
+  # join: issue {
+  #   type: left_outer
+  #   relationship: one_to_one
+  #   sql_on: ${issue_fix_version.issue_id} = ${issue.id} ;;
+  # }
+  join: issue_extended_jira {
+    view_label: "Issues"
     type: left_outer
     relationship: one_to_one
-    sql_on: ${issue_fix_version.issue_id} = ${issue.id} ;;
+    sql_on: ${issue_fix_version.issue_id} = ${issue_extended_jira.id} ;;
   }
 }
 
@@ -45,13 +56,6 @@ explore: issue_history_2 {
   label: "Issue History"
 #  fields: [ALL_FIELDS*, -issue.total_open_story_points,-issue.total_closed_story_points]
   view_name: issue
-
-# #  always_filter: {
-#     filters: {
-#       field: issue.id
-#       value: ""
-#     }
-#   }
 
   join: issue_history_all {
     type:  left_outer
@@ -64,6 +68,12 @@ explore: issue_history_2 {
 
 explore: project {
   join: issue {
+    type:  left_outer
+    sql_on: ${project.id} = ${issue.project} ;;
+    relationship: many_to_one
+  }
+  join: issue_extended_jira {
+    view_label: "Issue All Fields"
     type:  left_outer
     sql_on: ${project.id} = ${issue.project} ;;
     relationship: many_to_one
@@ -166,47 +176,47 @@ explore: sprint_by_date {
 }
 
 
-explore: sprint_burndown {
-  view_name: looker_calendar
-  join: issue {
-    type: left_outer
-    sql_on:
-    ${looker_calendar.series_date_raw} >= ${issue.created_raw}
-    AND ${looker_calendar.series_date_raw} <= NVL(${issue.resolved_raw},current_date)
-    ;;
-    relationship: one_to_many
-  }
-  join: issue_sprint {
-    type: left_outer
-    sql_on: ${issue.id} = ${issue_sprint.issue_id} ;;
-    relationship: one_to_many
-  }
-  join: sprint {
-    type: left_outer
-    sql_on: ${issue_sprint.sprint_id} = ${sprint.id} ;;
-    relationship: many_to_one
-  }
-  join: sprint_start_points {
-    type: left_outer
-    sql_on: ${sprint.id} = ${sprint_start_points.id} ;;
-    relationship: one_to_one
-  }
+# explore: sprint_burndown {
+#   view_name: looker_calendar
+#   join: issue {
+#     type: left_outer
+#     sql_on:
+#     ${looker_calendar.series_date_raw} >= ${issue.created_raw}
+#     AND ${looker_calendar.series_date_raw} <= NVL(${issue.resolved_raw},current_date)
+#     ;;
+#     relationship: one_to_many
+#   }
+#   join: issue_sprint {
+#     type: left_outer
+#     sql_on: ${issue.id} = ${issue_sprint.issue_id} ;;
+#     relationship: one_to_many
+#   }
+#   join: sprint {
+#     type: left_outer
+#     sql_on: ${issue_sprint.sprint_id} = ${sprint.id} ;;
+#     relationship: many_to_one
+#   }
+#   join: sprint_start_points {
+#     type: left_outer
+#     sql_on: ${sprint.id} = ${sprint_start_points.id} ;;
+#     relationship: one_to_one
+#   }
 
-  join:  status {
-    type:  left_outer
-    sql_on: ${issue.status} = ${status.id} ;;
-    relationship: many_to_one
-  }
+#   join:  status {
+#     type:  left_outer
+#     sql_on: ${issue.status} = ${status.id} ;;
+#     relationship: many_to_one
+#   }
 
-  sql_always_where:
-   ${looker_calendar.series_date_raw} >= ${sprint.start_raw}
-  AND ${looker_calendar.series_date_raw} <= ${sprint.end_raw}
-  ;;
-  #always_filter: {
-  #  filters: {
-  #    field: sprint.name
-  #    value: "Data Sprint 5"
-  #  }
-  #}
+#   sql_always_where:
+#   ${looker_calendar.series_date_raw} >= ${sprint.start_raw}
+#   AND ${looker_calendar.series_date_raw} <= ${sprint.end_raw}
+#   ;;
+#   #always_filter: {
+#   #  filters: {
+#   #    field: sprint.name
+#   #    value: "Data Sprint 5"
+#   #  }
+#   #}
 
-}
+# }

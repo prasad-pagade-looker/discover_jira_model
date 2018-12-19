@@ -1,17 +1,17 @@
-- dashboard: issue_details
-  title: Issue Details
+- dashboard: issue_details_jira
+  title: Issue Details from Jira
   layout: newspaper
   load_configuration: wait
   elements:
   - title: Issue Severity
     name: Issue Severity
     model: jira_block
-    explore: issue_extended
+    explore: issue_extended_jira
     type: single_value
     fields:
-    - issue_extended.severity_name
+    - issue_extended_jira.severity_name
     sorts:
-    - issue_extended.severity_name
+    - issue_extended_jira.severity_name
     limit: 500
     column_limit: 50
     custom_color_enabled: false
@@ -45,7 +45,7 @@
     totals_color: "#808080"
     series_types: {}
     listen:
-      Issue ID: issue_extended.id
+      Issue ID: issue_extended_jira.id
     row: 0
     col: 7
     width: 8
@@ -53,12 +53,12 @@
   - title: Issue Description
     name: Issue Description
     model: jira_block
-    explore: issue_extended
+    explore: issue_extended_jira
     type: looker_single_record
     fields:
-    - issue_extended.description
+    - issue_extended_jira.description
     sorts:
-    - issue_extended.description
+    - issue_extended_jira.description
     limit: 500
     column_limit: 50
     show_view_names: false
@@ -92,7 +92,7 @@
     totals_color: "#808080"
     series_types: {}
     listen:
-      Issue ID: issue_extended.id
+      Issue ID: issue_extended_jira.id
     title_hidden: true
     row: 0
     col: 15
@@ -101,12 +101,12 @@
   - title: Issue Status
     name: Issue Status
     model: jira_block
-    explore: issue_extended
+    explore: issue_extended_jira
     type: single_value
     fields:
-    - issue_extended.status_name
+    - issue_extended_jira.status_name
     sorts:
-    - issue_extended.status_name
+    - issue_extended_jira.status_name
     limit: 500
     query_timezone: America/New_York
     custom_color_enabled: false
@@ -128,7 +128,7 @@
     conditional_formatting_include_nulls: false
     series_types: {}
     listen:
-      Issue ID: issue_extended.id
+      Issue ID: issue_extended_jira.id
     row: 0
     col: 3
     width: 4
@@ -187,10 +187,10 @@
   - title: Issue ID
     name: Issue ID
     model: jira_block
-    explore: issue_extended
+    explore: issue_extended_jira
     type: single_value
     fields:
-    - issue_extended.id
+    - issue_extended_jira.id
     limit: 500
     query_timezone: America/New_York
     custom_color_enabled: false
@@ -212,7 +212,7 @@
     conditional_formatting_include_nulls: false
     series_types: {}
     listen:
-      Issue ID: issue_extended.id
+      Issue ID: issue_extended_jira.id
     row: 2
     col: 0
     width: 3
@@ -229,7 +229,6 @@
     - issue.project
     - issue.due_date
     - issue.environment
-    - issue.external_issue_id
     - issue._original_estimate
     - issue.original_estimate
     limit: 500
@@ -292,7 +291,7 @@
     - version.name
     - version.start_date
     - version.release_date
-    - issue_extended.id
+    - issue_extended_jira.id
     sorts:
     - version.start_date desc
     limit: 500
@@ -300,7 +299,7 @@
     hidden_fields:
     - issue.id
     listen:
-      Issue ID: issue_extended.id
+      Issue ID: issue_extended_jira.id
     row: 5
     col: 10
     width: 14
@@ -311,7 +310,7 @@
     type: field_filter
     default_value: ''
     model: jira_block
-    explore: issue_history_2
+    explore: issue
     field: issue.id
     listens_to_filters: []
     allow_multiple_values: true

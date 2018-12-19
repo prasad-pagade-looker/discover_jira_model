@@ -1,5 +1,5 @@
 view: issue_link {
-  sql_table_name: JIRA.ISSUE_LINK ;;
+  sql_table_name: connectors.JIRA.ISSUE_LINK ;;
 
   dimension: _fivetran_synced {
     type: string

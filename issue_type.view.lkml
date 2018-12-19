@@ -1,6 +1,6 @@
   view: issue_type {
 
-    sql_table_name: JIRA.ISSUE_TYPE ;;
+    sql_table_name: connectors.JIRA.ISSUE_TYPE ;;
 
     dimension: id {
       primary_key: yes

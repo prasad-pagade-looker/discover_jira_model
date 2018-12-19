@@ -1,5 +1,5 @@
 view: issue_reporter_history {
-  sql_table_name: JIRA.ISSUE_REPORTER_HISTORY ;;
+  sql_table_name: connectors.JIRA.ISSUE_REPORTER_HISTORY ;;
 
   dimension: _fivetran_synced {
     type: string

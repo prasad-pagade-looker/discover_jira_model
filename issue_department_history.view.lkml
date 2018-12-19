@@ -1,5 +1,5 @@
 view: issue_department_history {
-  sql_table_name: jira.issue_department_history ;;
+  sql_table_name: connectors.jira.issue_department_history ;; #Not present in the DB
 
   dimension_group: _fivetran_synced {
     type: time

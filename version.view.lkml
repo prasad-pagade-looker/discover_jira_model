@@ -1,5 +1,5 @@
   view: version {
-    sql_table_name: JIRA.VERSION ;;
+    sql_table_name: connectors.JIRA.VERSION ;;
 
     dimension: id {
       primary_key: yes

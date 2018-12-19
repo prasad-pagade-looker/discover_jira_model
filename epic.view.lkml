@@ -1,5 +1,5 @@
 view: epic {
-  sql_table_name: jira.epic ;;
+  sql_table_name: connectors.jira.epic ;;
 
   dimension: id {
     primary_key: yes

@@ -1,5 +1,5 @@
   view: priority {
-    sql_table_name: JIRA.PRIORITY ;;
+    sql_table_name: connectors.JIRA.PRIORITY ;;
 
     dimension: id {
       primary_key: yes

@@ -1,5 +1,5 @@
 view: issue_assignee_history {
-  sql_table_name: JIRA.ISSUE_ASSIGNEE_HISTORY ;;
+  sql_table_name: connectors.JIRA.ISSUE_ASSIGNEE_HISTORY ;;
 
   dimension: _fivetran_synced {
     type: string

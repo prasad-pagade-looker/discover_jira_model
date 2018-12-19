@@ -1,5 +1,5 @@
   view: project {
-    sql_table_name: JIRA.PROJECT ;;
+    sql_table_name: connectors.JIRA.PROJECT ;;
 
     dimension: id {
       primary_key: yes
