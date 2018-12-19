@@ -2,7 +2,7 @@ explore: infinity {label:"Infinity"}
 
 view: infinity {
   derived_table: {
-    sql: select
+    sql: Select
       i."KEY",
       i."SUMMARY",
       i."DESCRIPTION",
@@ -37,7 +37,12 @@ view: infinity {
       LEFT OUTER join CONNECTORS.JIRA.ISSUE_SPRINT as i_sprint on i."ID"=i_sprint."ISSUE_ID"
       LEFT OUTER join CONNECTORS.JIRA.SPRINT as sprint on i_sprint."SPRINT_ID" = sprint."ID"
       LEFT OUTER JOIN CONNECTORS.JIRA.ISSUE_CORPORATE_OBJECTIVES as ico on i."ID" = ico."ISSUE_ID"
-      LEFT OUTER JOIN CONNECTORS.JIRA.FIELD_OPTION as fo on ico."FIELD_OPTION_ID" = fo."ID";
+      LEFT OUTER JOIN CONNECTORS.JIRA.FIELD_OPTION as fo on ico."FIELD_OPTION_ID" = fo."ID"
+
+      GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20
+                ,21,22,23,24
+
+
        ;;
   }
 
