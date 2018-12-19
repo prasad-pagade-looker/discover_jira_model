@@ -18,9 +18,6 @@ explore: issue {
 }
 
 
-explore: infinity {
-}
-
 explore: sprint {
   join: issue_sprint {
     type:  left_outer

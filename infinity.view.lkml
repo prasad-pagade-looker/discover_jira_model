@@ -1,3 +1,5 @@
+explore: infinity {label:"Infinity"}
+
 view: infinity {
   derived_table: {
     sql: select
