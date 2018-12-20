@@ -18,7 +18,7 @@ persist_with: fivetran_datagroup
 
 explore: issue {
   label: "Issues - Infinity"
-  view_label: "Issues - Infinity"
+  #view_label: "Issues - Infinity"
   join: epic {
     type: left_outer
     sql_on: ${issue.epic_link} = ${epic.id} ;;
