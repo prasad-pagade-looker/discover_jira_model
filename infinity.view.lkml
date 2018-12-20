@@ -58,12 +58,13 @@ view: infinity {
   }
 
   dimension: summary {
+    sql: ${TABLE}."SUMMARY"
     type: string
     link: {
       label: "Go to JIRA"
-      url: "https://discoverorg.atlassian.net/browse/{{infinity.key.value}}"
+      url: "https://discoverorg.atlassian.net/browse/{infinty.key._value}"
         }
-    sql: ${TABLE}."SUMMARY" ;;
+    ;;
   }
 
   dimension: description {
