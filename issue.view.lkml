@@ -1,4 +1,4 @@
-view: issue {
+view: issue_old {
   sql_table_name: connectors.jira.issue ;;
 
   dimension: id {

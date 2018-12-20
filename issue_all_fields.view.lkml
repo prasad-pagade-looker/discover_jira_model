@@ -1,57 +1,8 @@
-#explore: issue_extended_jira {label:"Issues (Custom Fields)"}
+#explore: issue_all_fields {}
+view: issue {
+  sql_table_name: connectors.jira.issue ;;
 
-view: issue_extended_jira {
-  derived_table: {
-    sql: Select issue.*
-
-
-               ,project.name as project_name
-               --,resolution.name as resolution_name
-               ,severity.name as severity_name
-               ,status.name as status_name
-               ,issue_type.name as issue_type_name
-               ,LISTAGG(component.name, ', ') as component_list
-               ,LISTAGG(issue_link.related_issue_id, ', ') as related_issues_list
-
-         FROM connectors.jira.issue issue
-
-         LEFT OUTER JOIN connectors.jira.project
-            ON issue.project = project.id
-         LEFT OUTER JOIN connectors.jira.field_option severity -- unique alias
-            ON issue.severity = severity.id
-         LEFT OUTER JOIN connectors.jira.status
-            ON issue.status = status.id
-         LEFT OUTER JOIN connectors.jira.issue_type
-            ON issue.issue_type = issue_type.id
-
-        LEFT OUTER JOIN connectors.jira.issue_component_s
-            ON issue.id = issue_component_s.issue_id
-        LEFT OUTER JOIN connectors.jira.component
-            ON issue_component_s.component_id = component.id
-
-
-         LEFT OUTER JOIN connectors.jira.issue_link
-            ON issue.id = issue_link.issue_id
-
-         -- Each non-aggregated field (not included in a LISTAGG) needs to
-         -- be included i the GROUP BY clause, so that's every field in the
-         -- issue table along with each additional single value field.
-
-         GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20
-                ,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40
-                ,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,
-                61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,
-                81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100
-                ,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115
-                ,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130
-                ,131,132,133,134,135,136,137,138,139,140,141,142,143,144
- ;;
-  }
-
-  measure: count {
-    type: count
-    drill_fields: [detail*]
-  }
+  ####### Dimensions ##################
 
   dimension: id {
     primary_key: yes
@@ -516,12 +467,23 @@ view: issue_extended_jira {
 
   dimension: reviewed_by {
     type: string
-    sql: ${TABLE}."REVIEWED_BY" ;;
+    sql: ${TABLE}."REVIEWED_BY"  ;;
   }
 
   dimension: target_complete_date {
     type: date
     sql: ${TABLE}."TARGET_COMPLETE_DATE" ;;
+  }
+
+  dimension: is_past_due {
+    type: string
+    sql:
+           Case when ${target_complete_date} < current_date then 'Past Due'
+                when ${target_complete_date} >= current_date then 'Not Past Due'
+                when ${target_complete_date} is null then 'No input provided'
+            else null
+            end
+    ;;
   }
 
   dimension: authorized_by {
@@ -662,6 +624,11 @@ view: issue_extended_jira {
   dimension: summary {
     type: string
     sql: ${TABLE}."SUMMARY" ;;
+    link: {
+      label: "Go to JIRA"
+      icon_url: "https://discoverorg.atlassian.net/favicon-software.ico"
+      url: "https://discoverorg.atlassian.net/browse/{{issue.id._value}}"
+    }
   }
 
   dimension: urgency {
@@ -754,34 +721,10 @@ view: issue_extended_jira {
     sql: ${TABLE}."TAG_CREATED_" ;;
   }
 
-  dimension: project_name {
-    type: string
-    sql: ${TABLE}."PROJECT_NAME" ;;
-  }
-
-  dimension: severity_name {
-    type: string
-    sql: ${TABLE}."SEVERITY_NAME" ;;
-  }
-
-  dimension: status_name {
-    type: string
-    sql: ${TABLE}."STATUS_NAME" ;;
-  }
-
-  dimension: issue_type_name {
-    type: string
-    sql: ${TABLE}."ISSUE_TYPE_NAME" ;;
-  }
-
-  dimension: component_list {
-    type: string
-    sql: ${TABLE}."COMPONENT_LIST" ;;
-  }
-
-  dimension: related_issues_list {
-    type: string
-    sql: ${TABLE}."RELATED_ISSUES_LIST" ;;
+  ############### Measures ####################
+  measure: count_issue {
+    type: count
+    drill_fields: [detail*]
   }
 
   set: detail {
@@ -925,13 +868,13 @@ view: issue_extended_jira {
       customer_impacting_,
       deployment_priority_,
       phase,
-      tag_created_,
-      project_name,
-      severity_name,
-      status_name,
-      issue_type_name,
-      component_list,
-      related_issues_list
+      tag_created_
     ]
   }
-}
+
+  set: details_2 {
+    fields: [id]
+  }
+
+
+  }

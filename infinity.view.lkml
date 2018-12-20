@@ -1,4 +1,4 @@
-explore: infinity {label:"Infinity"}
+#explore: infinity {label:"Infinity"}
 
 view: infinity {
   derived_table: {
