@@ -63,7 +63,7 @@ view: infinity {
      link: {
       label: "Go to JIRA"
       icon_url: "https://discoverorg.atlassian.net/favicon-software.ico"
-      url: "https://discoverorg.atlassian.net/browse/{infinty.key._value}"
+      url: "https://discoverorg.atlassian.net/browse/{infinity.key._value}"
         }
 
   }
