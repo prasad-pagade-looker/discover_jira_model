@@ -59,12 +59,13 @@ view: infinity {
 
   dimension: summary {
     type: string
-    sql: ${TABLE}."SUMMARY"
+    sql: ${TABLE}."SUMMARY";;
      link: {
       label: "Go to JIRA"
+      icon_url: "https://discoverorg.atlassian.net/favicon-software.ico"
       url: "https://discoverorg.atlassian.net/browse/{infinty.key._value}"
         }
-    ;;
+
   }
 
   dimension: description {
