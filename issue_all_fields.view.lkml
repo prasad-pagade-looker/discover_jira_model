@@ -110,12 +110,14 @@ view: issue {
     sql: ${TABLE}."EST_HOURS_REQUIRED" ;;
   }
 
-  dimension: due_date {
+  dimension: due {
+    group_label: "Dates"
     type: date
     sql: ${TABLE}."DUE_DATE" ;;
   }
 
   dimension_group: last_viewed {
+    group_label: "Dates"
     type: time
     sql: ${TABLE}."LAST_VIEWED" ;;
   }
@@ -165,7 +167,8 @@ view: issue {
     sql: ${TABLE}."TASK_TYPE" ;;
   }
 
-  dimension: start_date {
+  dimension: start {
+    group_label: "Dates"
     type: date
     sql: ${TABLE}."START_DATE" ;;
   }
@@ -186,7 +189,9 @@ view: issue {
   }
 
   dimension_group: created {
+    group_label: "Dates"
     type: time
+    timeframes: [raw,date,week,month,year]
     sql: ${TABLE}."CREATED" ;;
   }
 
@@ -386,7 +391,9 @@ view: issue {
   }
 
   dimension_group: updated {
+    group_label: "Dates"
     type: time
+    timeframes: [date,week,month,year]
     sql: ${TABLE}."UPDATED" ;;
   }
 
@@ -445,8 +452,10 @@ view: issue {
     sql: ${TABLE}."ENVIRONMENT" ;;
   }
 
-  dimension_group: change_start_date {
+  dimension_group: change_start {
+    group_label: "Dates"
     type: time
+    timeframes: [date,week,month,year]
     sql: ${TABLE}."CHANGE_START_DATE" ;;
   }
 
@@ -491,7 +500,9 @@ view: issue {
     sql: ${TABLE}."AUTHORIZED_BY" ;;
   }
 
-  dimension_group: deployment_date_time {
+  dimension_group: deployment {
+    group_label: "Dates"
+    timeframes: [date,week,month,year]
     type: time
     sql: ${TABLE}."DEPLOYMENT_DATE_TIME" ;;
   }
@@ -727,148 +738,65 @@ view: issue {
     drill_fields: [detail*]
   }
 
+# Additional field for a simple way to determine
+  # if an issue is resolved
+  dimension: is_issue_resolved {
+    group_label: "Resolution"
+    type: yesno
+    sql: ${resolved_date} IS NOT NULL ;;
+  }
+
+  # Custom dimensions for time to resolve issue
+  dimension: hours_to_resolve_issue {
+    group_label: "Resolution"
+    label: "Time to Resolve (Hours)"
+    type: number
+    sql: DATEDIFF(h,${created_raw},${resolved_raw}) ;;
+    value_format_name: decimal_0
+  }
+
+  dimension: minutes_to_resolve_issue {
+    group_label: "Resolution"
+    label: "Time to Resolve (Minutes)"
+    type: number
+    sql: DATEDIFF(m,${created_raw},${resolved_raw}) ;;
+    value_format_name: decimal_0
+  }
+
+  dimension: days_to_resolve_issue {
+    group_label: "Resolution"
+    label: "Time to Resolve (Days)"
+    type: number
+    sql: DATEDIFF(d,${created_raw},${resolved_raw}) ;;
+    value_format_name: decimal_0
+  }
+
+  measure: total_time_to_resolve_issues_hours {
+    group_label: "Resolution"
+    label: "Total Time to Resolve Issues per Grouping"
+    description: "The total hours required to resolve all issues in the chosen dimension grouping"
+    type: sum
+    sql: ${days_to_resolve_issue} ;;
+    value_format_name: decimal_0
+  }
+
+  measure: avg_time_to_resolve_issues_hours {
+    group_label: "Resolution"
+    label: "Avg Time to Resolve Issues per Grouping"
+    description: "The average hours required to resolve all issues in the chosen dimension grouping"
+    type: average
+    sql: ${days_to_resolve_issue} ;;
+    value_format_name: decimal_0
+  }
+
+  measure: total_story_points {
+    type: sum
+    sql: ${story_points} ;;
+  }
+
   set: detail {
     fields: [
-      id,
-      mbo_,
-      routine_change,
-      termination_checklist_finance,
-      ro_request_origin,
-      requires_properties_changes_prop_,
-      epic_link,
-      current_branch_name,
-      termination_checklist_tech_team,
-      development,
-      customer_organization,
-      time_spent,
-      epic_theme,
-      _time_spent,
-      workaround,
-      status,
-      termination_checklist_research,
-      assignee,
-      feature_set,
-      qa_priority,
-      est_hours_required,
-      due_date,
-      last_viewed_time,
-      project,
-      issue_type,
-      self_service_code,
-      termination_checklist_hr,
-      original_requester,
-      re_index_required,
-      high_level_estimate_weeks_,
-      value_add_,
-      task_type,
-      start_date,
-      description,
-      change_risk,
-      breaking_changes_,
-      created_time,
-      change_completion_date_time,
-      technical_specs,
-      work_ratio,
-      doc_url,
-      rollback_plan,
-      approvers,
-      radar,
-      mbo_points,
-      key,
-      desk_com_case_url,
-      termination_checklist_marketing,
-      aha_reference,
-      emergency_change,
-      reporter,
-      new_hire_checklist_marketing,
-      applications_to_modify,
-      notify_when_fixed,
-      year,
-      test_plan,
-      qa_approval,
-      dev_approval,
-      original_estimate,
-      quarter,
-      benefit,
-      acceptance_criteria,
-      investigation_reason,
-      creator,
-      projected_release_date,
-      change_reason,
-      _remaining_estimate,
-      account_name,
-      story_point_estimate,
-      new_hire_checklist_research,
-      resolved_time,
-      _original_estimate,
-      impact,
-      high_level_estimate,
-      new_hire_checklist_sales_sdr_,
-      development_considerations,
-      updated_time,
-      cab,
-      priority,
-      new_hire_checklist_hr,
-      root_cause,
-      number_of_users_affected,
-      corporate_initiative,
-      new_hire_checklist_customer_success_cdr_,
-      parent_id,
-      product_category,
-      qa_testing_class,
-      environment,
-      change_start_date_time,
-      ro_requested_action,
-      resolution,
-      requires_database_changes_,
-      reviewed_by,
-      target_complete_date,
-      authorized_by,
-      deployment_date_time_time,
-      viewers,
-      corporate_objectives,
-      project_milestones,
-      source,
-      system,
-      issue_color,
-      function,
-      parent_link,
-      change_managers,
-      pending_reason,
-      account_revenue,
-      remaining_estimate,
-      new_hire_checklist_research_ops,
-      csm,
-      change_type,
-      database_changes_backwards_compatible_,
-      dev_outcome_notes,
-      satisfaction_date_time,
-      actual_release_date,
-      originated_in_dev_beta,
-      severity,
-      product_owner_approval,
-      qa_status,
-      termination_checklist_sales_cs,
-      testing_priority,
-      summary,
-      urgency,
-      flagged,
-      business_impact,
-      _fivetran_synced_time,
-      metrics_impacted,
-      epic_status,
-      product_owner,
-      epic_colour,
-      story_points,
-      epic_name,
-      team_owning,
-      acceptance_testing,
-      business_value,
-      epic_work_type,
-      customer_impacting_,
-      deployment_priority_,
-      phase,
-      tag_created_
+      key,target_complete_date,status, resolution, days_to_resolve_issue
     ]
   }
 
