@@ -47,7 +47,7 @@ explore: issue {
 
   join: project_category{
     type: left_outer
-    sql_on: ${project.project_category_id} = ${project_category.id}id} ;;
+    sql_on: ${project.project_category_id} = ${project_category.id} ;;
     relationship: many_to_one
   }
   join: status {
