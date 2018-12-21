@@ -509,10 +509,10 @@ view: issue {
   dimension: time_bucket {
     type: string
     sql:
-           Case when ${target_complete_date} < current_date then 'As of Today'
+           Case when ${target_complete_date} <= current_date then 'As of Today'
                 when ${target_complete_date} <= current_date + 14 then 'Next 2 Weeks'
                 when ${target_complete_date} <= current_date + 28 then  '2-4 weeks out'
-                When ${target_complete_date}  > current_date + 28 then  '4+ weeks out'
+                when ${target_complete_date}  > current_date + 28 then  '4+ weeks out'
                 when ${target_complete_date} is null then 'No input provided'
             else null
             end
