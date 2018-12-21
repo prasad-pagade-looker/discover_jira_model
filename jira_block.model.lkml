@@ -36,8 +36,8 @@ explore: issue {
   }
   join: issue_type {
     type: left_outer
-    sql_on: ${issue.id} = ${issue_type.id} ;;
-    relationship: one_to_many
+    sql_on: ${issue.issue_type} = ${issue_type.id} ;;
+    relationship: many_to_one
   }
   join: project {
     type: left_outer
