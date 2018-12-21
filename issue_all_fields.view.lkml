@@ -495,6 +495,19 @@ view: issue {
     ;;
   }
 
+  dimension: punch_list {
+    type: string
+    sql:
+           Case when ${target_complete_date} < current_date + 7 then 'Past Due'
+                when ${target_complete_date} >= current_date + 7 then 'Not Past Due'
+                when ${target_complete_date} is null then 'No input provided'
+            else null
+            end
+    ;;
+  }
+
+
+
   dimension: authorized_by {
     type: string
     sql: ${TABLE}."AUTHORIZED_BY" ;;
