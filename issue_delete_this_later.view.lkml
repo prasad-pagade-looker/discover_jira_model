@@ -26,17 +26,17 @@ view: issue_old {
 #     sql: ${TABLE}.external_issue_id ;;
 #   }
 
-  dimension: _original_estimate {
+  dimension: original_estimate {
     type: number
     sql: ${TABLE}._original_estimate ;;
   }
 
-  dimension: _remaining_estimate {
+  dimension: remaining_estimate {
     type: number
     sql: ${TABLE}._remaining_estimate ;;
   }
 
-  dimension: _time_spent {
+  dimension: time_spent {
     type: number
     sql: ${TABLE}._time_spent ;;
   }
@@ -98,7 +98,7 @@ view: issue_old {
     sql: ${TABLE}.issue_type ;;
   }
 
-  dimension: original_estimate {
+  dimension: original_estimate_ {
     type: number
     sql: ${TABLE}.original_estimate ;;
   }

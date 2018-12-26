@@ -183,7 +183,7 @@ view: issue {
     sql: ${TABLE}."CHANGE_RISK" ;;
   }
 
-  dimension: breaking_changes_ {
+  dimension: breaking_changes {
     type: number
     sql: ${TABLE}."BREAKING_CHANGES_" ;;
   }
@@ -213,6 +213,10 @@ view: issue {
   dimension: doc_url {
     type: string
     sql: ${TABLE}."DOC_URL" ;;
+    link: {
+      label: "Click to go to the doc"
+      url: "{{value}}"
+    }
   }
 
   dimension: rollback_plan {
@@ -818,6 +822,12 @@ view: issue {
   measure: total_story_points {
     type: sum
     sql: ${story_points} ;;
+  }
+
+  measure: summary_list {
+    description: "Use Time Bucket Dimension"
+    type: string
+    sql: listagg(${summary}, '  ||  ') ;;
   }
 
   set: detail {
