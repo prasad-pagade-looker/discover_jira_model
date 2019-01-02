@@ -622,7 +622,7 @@ view: issue {
     sql: ${TABLE}."DEV_OUTCOME_NOTES" ;;
   }
 
-  dimension_group: satisfaction_date {
+  dimension_group: satisfaction {
     type: time
     sql: ${TABLE}."SATISFACTION_DATE" ;;
   }
@@ -761,6 +761,42 @@ view: issue {
     type: number
     sql: ${TABLE}."TAG_CREATED_" ;;
   }
+
+  ############## Special Dimension to sort the summary field ########
+
+  dimension: is_epic {
+    type: yesno
+    sql: ${epic_link}>0 ;;
+  }
+
+  dimension: is_task {
+    type: yesno
+     sql: ${issue_type} = 12355  ;; ##Logic here
+  }
+
+  dimension: is_sub_task {
+    type: yesno
+    #sql:  ;;
+    sql: ${issue_type} = 12356 ;;
+  }
+
+  dimension: new_summ {
+    type: string
+    sql:
+        Case when ${is_epic}  then ${summary}
+            when ${is_task} then concat('  ---',${summary})
+            when ${is_sub_task} then concat('  ----------',${summary})
+        else null
+        end
+    ;;
+  }
+
+#   dimension: sort_key {
+#     type: string
+#     #sql:  ;;
+#   }
+
+
 
   ############### Measures ####################
   measure: count_issue {
