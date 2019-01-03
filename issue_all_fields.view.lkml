@@ -766,7 +766,7 @@ view: issue {
 
   dimension: is_epic {
     type: yesno
-    sql: ${epic_link}>0 ;;
+    sql: ${issue_type} = 6 ;;
   }
 
   dimension: is_task {
@@ -784,8 +784,8 @@ view: issue {
     type: string
     sql:
         Case when ${is_epic}  then ${summary}
-            when ${is_task} then concat('   - ',${summary})
-            when ${is_sub_task} then concat('       -- ',${summary})
+            when ${is_task} then concat('_    - ',${summary})
+            when ${is_sub_task} then concat('_          -- ',${summary})
         else null
         end
     ;;
