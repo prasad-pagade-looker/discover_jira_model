@@ -779,6 +779,10 @@ view: issue {
     sql: ${issue_type} = 12355 AND ${epic_link} > 0 ;; ##Logic here
   }
 
+  dimension: is_task_wo_epic {
+    type: yesno
+    sql: ${issue_type} = 12355 AND ${epic_link} = NULL ;; ##Logic here
+  }
   dimension: is_sub_task {
     type: yesno
     #sql:  ;;
