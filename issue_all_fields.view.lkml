@@ -784,8 +784,8 @@ view: issue {
     type: string
     sql:
         Case when ${is_epic}  then ${summary}
-            when ${is_task} then concat('  ---',${summary})
-            when ${is_sub_task} then concat('  ----------',${summary})
+            when ${is_task} then concat('   - ',${summary})
+            when ${is_sub_task} then concat('       -- ',${summary})
         else null
         end
     ;;
