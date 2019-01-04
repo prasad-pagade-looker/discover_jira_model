@@ -808,8 +808,8 @@ view: issue {
     type: string
     sql:
         Case when ${is_epic}  then ${summary}
-            when ${is_task_w_epic} then concat('. . . . .',${summary})
-            when ${is_task_wo_epic} then concat('. .ne. . .',${summary})
+            when ${is_task_w_epic} then concat('. . . .',${summary})
+            when ${is_task_wo_epic} then concat('.ne. . .',${summary})
             when ${is_sub_task} then concat('. . . . . .--.',${summary})
         else ''
         end
@@ -826,7 +826,7 @@ view: issue {
 
       html:
       {% if value == 6 %}
-      <p style="font-size: 200%">{{ new_summ }}</p>
+      <p style="font-size: 175%">{{ new_summ }}</p>
       {% elsif value == 12355 %}
       <p style="font-size: 125%">{{ new_summ }}</p>
       {% else %}
