@@ -130,6 +130,8 @@ view: issue {
   dimension: issue_type {
     type: number
     sql: ${TABLE}."ISSUE_TYPE" ;;
+
+
   }
 
   dimension: self_service_code {
@@ -242,6 +244,11 @@ view: issue {
   dimension: key {
     type: string
     sql: ${TABLE}."KEY" ;;
+    link: {
+      label: "Go to JIRA"
+      icon_url: "https://discoverorg.atlassian.net/favicon-software.ico"
+      url: "https://discoverorg.atlassian.net/browse/{{issue.key._value}}"
+    }
   }
 
   dimension: desk_com_case_url {
@@ -807,12 +814,28 @@ view: issue {
         else ''
         end
     ;;
-    link: {
-      label: "Go to JIRA"
-      icon_url: "https://discoverorg.atlassian.net/favicon-software.ico"
-      url: "https://discoverorg.atlassian.net/browse/{{issue.key._value}}"
+
+
+
     }
-  }
+
+
+    dimension: new_summ_size {
+      type: string
+      sql:  ${TABLE}."ISSUE_TYPE" ;;
+
+      html:
+      {% if value == 6 %}
+      <p style="font-size: 200%">{{ new_summ }}</p>
+      {% elsif value == 12355 %}
+      <p style="font-size: 125%">{{ new_summ }}</p>
+      {% else %}
+      <p style="font-size: 85%">{{ new_summ }}</p>
+      {% endif %}
+      ;;
+
+      }
+
 
   ############## Building Sort Key ########
 
