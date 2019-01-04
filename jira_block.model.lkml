@@ -20,11 +20,11 @@ explore: issue {
   label: "Issues - Main"
   #view_label: "Issues - Main"
 
-  join: issue_1 {
+  join: issue_Link_1 {
     fields: []
     from: issue
     type: left_outer
-    sql_on: ${issue.parent_id} ${issue_1.id}} ;;
+    sql_on: ${issue.parent_id} ${issue_Link_1.id}} ;;
     relationship: many_to_one
   }
 
