@@ -19,12 +19,14 @@ persist_with: fivetran_datagroup
 explore: issue {
   label: "Issues - Main"
   #view_label: "Issues - Main"
-#   join: issue_1 {
-#     fields: [issue_1.sort_key]
-#     from: issue
-#     type: left_outer
-#     sql: issu ;;
-#   }
+
+  join: issue_1 {
+    fields: []
+    from: issue
+    type: left_outer
+    sql_on: ${issue.parent_id} ${issue_1.id}} ;;
+    relationship: many_to_one
+  }
 
   join: epic {
     type: left_outer
