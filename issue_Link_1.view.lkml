@@ -1,3 +1,4 @@
+  #explore: issue_Link_1 {}
   view: issue_Link_1 {
     sql_table_name: connectors.jira.issue ;;
 
