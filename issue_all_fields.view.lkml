@@ -807,6 +807,11 @@ view: issue {
         else ''
         end
     ;;
+    link: {
+      label: "Go to JIRA"
+      icon_url: "https://discoverorg.atlassian.net/favicon-software.ico"
+      url: "https://discoverorg.atlassian.net/browse/{{issue.key._value}}"
+    }
   }
 
   ############## Building Sort Key ########
