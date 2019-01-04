@@ -21,10 +21,20 @@ explore: issue {
   #view_label: "Issues - Main"
 
   join: issue_Link_1 {
-    fields: []
-    from: issue
     type: left_outer
-    sql_on: ${issue.parent_id} ${issue_Link_1.id}} ;;
+    sql_on: ${issue.parent_id} = ${issue_Link_1.id} ;;
+    relationship: many_to_one
+  }
+
+  join: issue_Link_2 {
+    type: left_outer
+    sql_on: ${issue_Link_1.epic_link} = ${issue_Link_2.id} ;;
+    relationship: many_to_one
+  }
+
+  join: issue_Link_3 {
+    type: left_outer
+    sql_on: ${issue.epic_link} = ${issue_Link_3.id} ;;
     relationship: many_to_one
   }
 

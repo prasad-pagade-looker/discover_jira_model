@@ -804,8 +804,57 @@ view: issue {
             when ${is_task_w_epic} then concat('. . . . .',${summary})
             when ${is_task_wo_epic} then concat('. .ne. . .',${summary})
             when ${is_sub_task} then concat('. . . . . .--.',${summary})
-        else null
+        else ''
         end
+    ;;
+  }
+
+  ############## Building Sort Key ########
+
+  dimension: sort_key_1 {
+    type: string
+    sql:
+
+       Case  when ${issue_type} = 6  then ${key}
+             when ${issue_Link_1.epic_link} > 0 then ${issue_Link_2.key}
+             when ${epic_link} > 0 then ${issue_Link_3.key}
+            else ''
+       end
+
+        ;;
+        }
+
+  dimension: sort_key_2 {
+    type: string
+    sql:
+
+       Case when ${issue_type} = 12355 then ${key}
+            when ${issue_type} = 12356 then ${issue_Link_1.key}
+            else ''
+       end
+
+        ;;
+  }
+
+    dimension: sort_key_3 {
+    type: string
+    sql:
+
+        Case when ${issue_type} = 12356 then ${key}
+        else ''
+        end
+
+    ;;
+  }
+
+  dimension: sort_key {
+    type: string
+    sql:
+
+        concat(
+           concat(${sort_key_1}, ${sort_key_2})
+          , ${sort_key_3})
+
     ;;
   }
 
