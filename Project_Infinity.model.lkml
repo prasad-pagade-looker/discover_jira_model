@@ -22,7 +22,7 @@ persist_with: fivetran_datagroup
 
 explore: issue_all_fields {
 
-  label: "Issues - Main"
+  label: "Project Infinity - JIRA"
   from:  issue_all_fields
   #view_label: "Issues - Main"
   fields: [
