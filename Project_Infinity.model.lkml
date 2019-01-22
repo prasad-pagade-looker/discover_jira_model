@@ -31,7 +31,10 @@ explore: issue_all_fields {
     issue_type.description, issue_type.is_bug, issue_type.name, #Issue Type Table
     project.description, project.name, #Project Table
     sprint.complete_date, sprint.name, sprint.start_date, #Sprint Table
-    status.description, status.name, status.status_category_id] #Status Table
+    status.description, status.name, status.status_category_id,
+
+    #example of measure for Jon
+    issue_all_fields.summary_list] #Status Table
 
 
   join: epic {
