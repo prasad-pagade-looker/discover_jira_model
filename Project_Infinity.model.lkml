@@ -25,16 +25,30 @@ explore: issue_all_fields {
   label: "Issues - Main"
   from:  issue_all_fields
   #view_label: "Issues - Main"
-  fields: [epic.done, epic.key, epic.name, epic.summary, #Epic Table
-    issue_all_fields.assignee, issue_all_fields.due, issue_all_fields.description, issue_all_fields.is_epic, issue_all_fields.is_past_due, issue_all_fields.issue_type, #Issue Table 1
-    issue_all_fields.key, issue_all_fields.no_epic, issue_all_fields.summary, #Issue Table 2
-    issue_type.description, issue_type.is_bug, issue_type.name, #Issue Type Table
-    project.description, project.name, #Project Table
-    sprint.complete_date, sprint.name, sprint.start_date, #Sprint Table
+  fields: [
+    #Epic Table
+    epic.done, epic.key, epic.name, epic.summary,
+
+    #Issue Table 1
+    issue_all_fields.assignee, issue_all_fields.due, issue_all_fields.description, issue_all_fields.is_epic, issue_all_fields.is_past_due,
+
+    #Issue Table 2
+    issue_all_fields.issue_type, issue_all_fields.key, issue_all_fields.no_epic, issue_all_fields.summary,
+
+    #Issue Type Table
+    issue_type.description, issue_type.is_bug, issue_type.name,
+
+    #Project Table
+    project.description, project.name,
+
+    #Sprint Table
+    sprint.complete_date, sprint.name, sprint.start_date,
+
+    #Status Table
     status.description, status.name, status.status_category_id,
 
-    #example of measure for Jon
-    issue_all_fields.summary_list] #Status Table
+    #Measures (unfinished)
+    issue_all_fields.summary_list]
 
 
   join: epic {
