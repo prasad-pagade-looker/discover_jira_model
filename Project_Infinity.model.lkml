@@ -1,8 +1,8 @@
 connection: "snowflakedb"
+
 include: "*.view.lkml"                       # include all views in this project
 include: "cumulative_flow.dashboard.lookml"   # include a LookML dashboard called my_dashboard
 
-connection: "snowflakedb"
 
 datagroup: fivetran_datagroup {
   sql_trigger: SELECT max(date_trunc('minute', done)) FROM jira.fivetran_audit ;;
