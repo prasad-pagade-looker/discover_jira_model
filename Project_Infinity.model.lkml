@@ -29,10 +29,8 @@ explore: issue_all_fields {
     #Epic Table
     epic.done, epic.key, epic.name, epic.summary,
 
-    #Issue Table 1
+    #Issue Table
     issue_all_fields.assignee, issue_all_fields.due, issue_all_fields.description, issue_all_fields.is_epic, issue_all_fields.is_past_due,
-
-    #Issue Table 2
     issue_all_fields.issue_type, issue_all_fields.key, issue_all_fields.no_epic, issue_all_fields.summary,
 
     #Issue Type Table
@@ -47,8 +45,9 @@ explore: issue_all_fields {
     #Status Table
     status.description, status.name, status.status_category_id,
 
-    #Measures (unfinished)
-    epic.count, issue_all_fields.count_issue, issue_all_fields.resolution, issue_all_fields.total_story_points, issue_type.count, project.count, sprint.count, status.count, issue_all_fields.summary_list]
+    #Measures
+    epic.count, issue_all_fields.count_issue, issue_all_fields.total_time_to_resolve_issues_hours, issue_all_fields.avg_time_to_resolve_issues_hours,
+    issue_all_fields.total_story_points, issue_type.count, project.count, sprint.count, status.count, issue_all_fields.summary_list]
 
 
   join: epic {
