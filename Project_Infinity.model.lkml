@@ -13,6 +13,7 @@ persist_with: fivetran_datagroup
 
 
 explore: issue {
+  view_name: issue
   label: "Issues - Main"
   #view_label: "Issues - Main"
   fields: [epic.done, epic.key, epic.name, epic.summary, #Epic Table
