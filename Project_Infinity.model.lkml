@@ -1,7 +1,15 @@
 connection: "snowflakedb"
 
-include: "*.view.lkml"                       # include all views in this project
-include: "cumulative_flow.dashboard.lookml"   # include a LookML dashboard called my_dashboard
+include: "epic.view.lkml"
+include: "issue_Link_1.view.lkml"
+include: "issue_Link_2.view.lkml"
+include: "issue_Link_3.view.lkml"
+include: "issue_type.view.lkml"
+include: "project.view.lkml"
+include: "status.view.lkml"
+include: "issue_sprint.view.lkml"
+include: "sprint.view.lkml"
+include: "issue_all_fields.view.lkml"
 
 
 datagroup: fivetran_datagroup {
@@ -16,13 +24,7 @@ explore: issue {
   view_name: issue
   label: "Issues - Main"
   #view_label: "Issues - Main"
-  fields: [epic.done, epic.key, epic.name, epic.summary, #Epic Table
-    assignee, due, description, epic_link, epic_status, id, is_epic, is_past_due, is_sub_task, is_task, is_task_w_epic, is_task_wo_epic, #Issue Table 1
-    issue_type, key, new_summ, new_summ_size, no_epic, parent_id, parent_link, project, sort_key, sort_key_1, sort_key_2, sort_key_3, status, summary, #Issue Table 2
-    issue_type.description, issue_type.is_bug, issue_type.name, #Issue Type Table
-    project.description, project.name, project.project_category_id, #Project Table
-    sprint.complete_date, sprint.name, sprint.start_date, #Sprint Table
-    status.description, status.name, status.status_category_id] #Status Table
+
   join: epic {
     type: left_outer
     sql_on: ${issue.epic_link} = ${epic.id} ;;
