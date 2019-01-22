@@ -20,14 +20,14 @@ datagroup: fivetran_datagroup {
 persist_with: fivetran_datagroup
 
 
-explore: issue {
-  view_name: issue_test
+explore: issue_all_fields {
+
   label: "Issues - Main"
-  from:  issue
+  from:  issue_all_fields
   #view_label: "Issues - Main"
   fields: [epic.done, epic.key, epic.name, epic.summary, #Epic Table
-    issue_test.assignee, issue_test.due, issue_test.description, issue_test.is_epic, issue_test.is_past_due, issue_test.issue_type, #Issue Table 1
-    issue_test.key, issue_test.no_epic, issue_test.summary, #Issue Table 2
+    issue_all_fields.assignee, issue_all_fields.due, issue_all_fields.description, issue_all_fields.is_epic, issue_all_fields.is_past_due, issue_all_fields.issue_type, #Issue Table 1
+    issue_all_fields.key, issue_all_fields.no_epic, issue_all_fields.summary, #Issue Table 2
     issue_type.description, issue_type.is_bug, issue_type.name, #Issue Type Table
     project.description, project.name, #Project Table
     sprint.complete_date, sprint.name, sprint.start_date, #Sprint Table
@@ -36,13 +36,13 @@ explore: issue {
 
   join: epic {
     type: left_outer
-    sql_on: ${issue_test.epic_link} = ${epic.id} ;;
+    sql_on: ${issue_all_fields.epic_link} = ${epic.id} ;;
     relationship: many_to_one
   }
 
   join: issue_Link_1 {
     type: left_outer
-    sql_on: ${issue_test.parent_id} = ${issue_Link_1.id} ;;
+    sql_on: ${issue_all_fields.parent_id} = ${issue_Link_1.id} ;;
     relationship: many_to_one
   }
 
@@ -54,31 +54,31 @@ explore: issue {
 
   join: issue_Link_3 {
     type: left_outer
-    sql_on: ${issue_test.epic_link} = ${issue_Link_3.id} ;;
+    sql_on: ${issue_all_fields.epic_link} = ${issue_Link_3.id} ;;
     relationship: many_to_one
   }
 
   join: issue_type {
     type: left_outer
-    sql_on: ${issue_test.issue_type} = ${issue_type.id} ;;
+    sql_on: ${issue_all_fields.issue_type} = ${issue_type.id} ;;
     relationship: many_to_one
   }
 
   join: project {
     type: left_outer
-    sql_on: ${issue_test.project} = ${project.id} ;;
+    sql_on: ${issue_all_fields.project} = ${project.id} ;;
     relationship: many_to_one
   }
 
   join: status {
     type: left_outer
-    sql_on: ${issue_test.status} = ${status.id} ;;
+    sql_on: ${issue_all_fields.status} = ${status.id} ;;
     relationship: many_to_one
   }
 
   join: issue_sprint {
     type: left_outer
-    sql_on: ${issue_test.id} = ${issue_sprint.issue_id} ;;
+    sql_on: ${issue_all_fields.id} = ${issue_sprint.issue_id} ;;
     relationship: one_to_many
   }
 

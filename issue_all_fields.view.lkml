@@ -1,5 +1,5 @@
 #explore: issue_all_fields {}
-view: issue {
+view: issue_all_fields {
   sql_table_name: connectors.jira.issue ;;
 
   ####### Dimensions ##################
@@ -247,7 +247,7 @@ view: issue {
     link: {
       label: "Go to JIRA"
       icon_url: "https://discoverorg.atlassian.net/favicon-software.ico"
-      url: "https://discoverorg.atlassian.net/browse/{{issue.key._value}}"
+      url: "https://discoverorg.atlassian.net/browse/{{issue_all_fields.key._value}}"
     }
   }
 
@@ -675,7 +675,7 @@ view: issue {
     link: {
       label: "Go to JIRA"
       icon_url: "https://discoverorg.atlassian.net/favicon-software.ico"
-      url: "https://discoverorg.atlassian.net/browse/{{issue.key._value}}"
+      url: "https://discoverorg.atlassian.net/browse/{{issue_all_fields.key._value}}"
     }
   }
 
