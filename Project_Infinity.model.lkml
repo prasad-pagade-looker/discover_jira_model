@@ -48,7 +48,7 @@ explore: issue_all_fields {
     status.description, status.name, status.status_category_id,
 
     #Measures (unfinished)
-    issue_all_fields.summary_list]
+    epic.count, issue_all_fields.count_issue, issue_all_fields.resolution, issue_all_fields.total_story_points, issue_type.count, project.count, sprint.count, status.count, issue_all_fields.summary_list]
 
 
   join: epic {
