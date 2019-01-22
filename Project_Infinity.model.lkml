@@ -25,6 +25,13 @@ explore: issue {
   label: "Issues - Main"
   from:  issue
   #view_label: "Issues - Main"
+  fields: [epic.done, epic.key, epic.name, epic.summary, #Epic Table
+    issue_test.assignee, due, description, epic_link, epic_status, id, is_epic, is_past_due, is_sub_task, is_task, is_task_w_epic, is_task_wo_epic, #Issue Table 1
+    issue_type, key, new_summ, new_summ_size, no_epic, parent_id, parent_link, project, sort_key, sort_key_1, sort_key_2, sort_key_3, status, summary, #Issue Table 2
+    issue_type.description, issue_type.is_bug, issue_type.name, #Issue Type Table
+    project.description, project.name, project.project_category_id, #Project Table
+    sprint.complete_date, sprint.name, sprint.start_date, #Sprint Table
+    status.description, status.name, status.status_category_id] #Status Table
 
 
   join: epic {
