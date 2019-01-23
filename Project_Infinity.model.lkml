@@ -103,10 +103,7 @@ explore: issue_all_fields {
     relationship: one_to_many
   }
 
-  always_filter: {
-    filters: {
-      field: key
-      value: "INF%"
-    }
-  }
+#this is a filter that cannot be viewed or removed from the explore menu
+  sql_always_where: ${issue_all_fields.key} like 'INF%' ;;
+
   }
