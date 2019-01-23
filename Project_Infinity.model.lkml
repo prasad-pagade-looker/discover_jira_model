@@ -30,7 +30,7 @@ explore: issue_all_fields {
     #epic.done, epic.key, epic.name, epic.summary,
 
     #Issue Table
-    issue_all_fields.key, issue_all_fields.new_summ_size, issue_all_fields.assignee, issue_all_fields.target_complete_date, issue_all_fields.sort_key,
+    issue_all_fields.key, issue_all_fields.new_summ_size, issue_all_fields.new_summ, issue_all_fields.assignee, issue_all_fields.target_complete_date, issue_all_fields.sort_key,
 
     #Issue Type Table
     #issue_type.description, issue_type.is_bug, issue_type.name,
