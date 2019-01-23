@@ -39,7 +39,7 @@ explore: issue_all_fields {
     #project.description, project.name,
 
     #Sprint Table
-    sprint.complete_date, sprint.name, sprint.start_date,
+    sprint.name,
 
     #Status Table
     status.name]
