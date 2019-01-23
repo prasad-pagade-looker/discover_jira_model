@@ -102,4 +102,11 @@ explore: issue_all_fields {
     sql_on: ${issue_sprint.sprint_id} = ${sprint.id} ;;
     relationship: one_to_many
   }
+
+  always_filter: {
+    filters: {
+      field: key
+      value: "INF%"
+    }
+  }
   }
