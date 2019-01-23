@@ -27,27 +27,26 @@ explore: issue_all_fields {
   #view_label: "Issues - Main"
   fields: [
     #Epic Table
-    epic.done, epic.key, epic.name, epic.summary,
+    #epic.done, epic.key, epic.name, epic.summary,
 
     #Issue Table
-    issue_all_fields.assignee, issue_all_fields.due, issue_all_fields.description, issue_all_fields.is_epic, issue_all_fields.is_past_due,
-    issue_all_fields.issue_type, issue_all_fields.key, issue_all_fields.no_epic, issue_all_fields.summary,
+    issue_all_fields.key, issue_all_fields.new_summ_size, issue_all_fields.assignee, issue_all_fields.target_complete_date, issue_all_fields.sort_key,
 
     #Issue Type Table
-    issue_type.description, issue_type.is_bug, issue_type.name,
+    #issue_type.description, issue_type.is_bug, issue_type.name,
 
     #Project Table
-    project.description, project.name,
+    #project.description, project.name,
 
     #Sprint Table
     sprint.complete_date, sprint.name, sprint.start_date,
 
     #Status Table
-    status.description, status.name, status.status_category_id,
+    status.name]
 
     #Measures
-    epic.count, issue_all_fields.count_issue, issue_all_fields.total_time_to_resolve_issues_hours, issue_all_fields.avg_time_to_resolve_issues_hours,
-    issue_all_fields.total_story_points, issue_type.count, project.count, sprint.count, status.count, issue_all_fields.summary_list]
+    #epic.count, issue_all_fields.count_issue, issue_all_fields.total_time_to_resolve_issues_hours, issue_all_fields.avg_time_to_resolve_issues_hours,
+    #issue_all_fields.total_story_points, issue_type.count, project.count, sprint.count, status.count, issue_all_fields.summary_list]
 
 
   join: epic {
@@ -75,9 +74,9 @@ explore: issue_all_fields {
   }
 
   join: issue_type {
-    type: left_outer
-    sql_on: ${issue_all_fields.issue_type} = ${issue_type.id} ;;
-    relationship: many_to_one
+  type: left_outer
+  sql_on: ${issue_all_fields.issue_type} = ${issue_type.id} ;;
+  relationship: many_to_one
   }
 
   join: project {
