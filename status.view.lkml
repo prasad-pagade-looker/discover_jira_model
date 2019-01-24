@@ -46,39 +46,39 @@
       sql: COUNT(CASE WHEN (status.NAME = '0 - Backlog') THEN status.ID  ELSE NULL END);;
     }
 
-    measure: 1_newly_assigned {
+    measure: 1_newly_assigned_count {
       sql: COUNT(CASE WHEN (status.NAME = '1 - Newly Assigned') THEN status.ID  ELSE NULL END);;
     }
 
-    measure: 2_not_started {
+    measure: 2_not_started_count {
       sql: COUNT(CASE WHEN (status.NAME = '2 - Not Started') THEN status.ID  ELSE NULL END);;
     }
 
-    measure: 3_not_started_behind {
+    measure: 3_not_started_behind_count {
       sql: COUNT(CASE WHEN (status.NAME = '3 - Not Started Behind') THEN status.ID  ELSE NULL END);;
     }
 
-    measure: 4_in_progress_on_time {
+    measure: 4_in_progress_on_time_count {
       sql: COUNT(CASE WHEN (status.NAME = '4 - In Progress On Time') THEN status.ID  ELSE NULL END);;
     }
 
-    measure: 5_in_progress_behind {
+    measure: 5_in_progress_behind_count {
       sql: COUNT(CASE WHEN (status.NAME = '5 - In Progress Behind') THEN status.ID  ELSE NULL END);;
     }
 
-    measure: 6_ready_for_sign_off {
+    measure: 6_ready_for_sign_off_count {
       sql: COUNT(CASE WHEN (status.NAME = '6 - Ready for Sign Off') THEN status.ID  ELSE NULL END);;
     }
 
-    measure: 7_completed {
+    measure: 7_completed_count {
       sql: COUNT(CASE WHEN (status.NAME = '7 - Completed') THEN status.ID  ELSE NULL END);;
     }
 
-    measure: 8_not_needed {
+    measure: 8_not_needed_count {
       sql: COUNT(CASE WHEN (status.NAME = '8 - Not Needed') THEN status.ID  ELSE NULL END);;
     }
 
-    measure: 9_on_going_work {
+    measure: 9_on_going_work_count {
       sql: COUNT(CASE WHEN (status.NAME = '9 - On Going Work') THEN status.ID  ELSE NULL END);;
     }
 
