@@ -88,6 +88,7 @@
       type: number
       sql: COUNT(CASE WHEN (status.NAME = '7 - Completed') THEN status.ID  ELSE NULL END);;
       value_format: "0"
+      drill_fields: [issue_all_fields.key, issue_all_fields.assignee, sprint.name]
     }
 
     measure: 8_not_needed_count {
@@ -102,5 +103,11 @@
       value_format: "0"
     }
 
+    measure: percent_complete {
+      type: number
+      sql: (${7_completed_count})/(${0_backlog_count}+${1_newly_assigned_count}+${2_not_started_count}+${3_not_started_behind_count}+${4_in_progress_on_time_count}+${5_in_progress_behind_count}+${6_ready_for_sign_off_count}+${7_completed_count}+${9_on_going_work_count}) ;;
+      value_format: "0%"
+      drill_fields: [issue_all_fields.key, issue_all_fields.assignee, sprint.name]
+    }
 
 }
