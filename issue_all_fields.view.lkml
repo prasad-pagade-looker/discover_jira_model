@@ -961,6 +961,36 @@ view: issue_all_fields {
     sql: listagg(${summary}, '  ||  ') ;;
   }
 
+  dimension: days_to_complete {
+    type: number
+    sql: DATEDIFF(d,${current_date},${target_complete_date} ) ;;
+    value_format_name: decimal_0
+    drill_fields: [issue_all_fields.key, issue_all_fields.assignee, sprint.name]
+  }
+
+  measure: due_in_7_days {
+    type: count
+    filters: {
+      field: days_to_complete
+      value: ">0 AND <7"
+    }
+    drill_fields: [issue_all_fields.key, issue_all_fields.assignee, target_complete_date, sprint.name]
+  }
+
+  measure: past_due {
+    type: count
+    filters: {
+      field: days_to_complete
+      value: "<-3"
+    }
+    drill_fields: [issue_all_fields.key, issue_all_fields.assignee, target_complete_date, sprint.name]
+  }
+
+  dimension: current_date {
+    type: date
+    sql: select current_date ;;
+  }
+
   set: detail {
     fields: [
       key,target_complete_date,status, resolution, days_to_resolve_issue
