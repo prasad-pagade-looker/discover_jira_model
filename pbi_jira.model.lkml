@@ -91,6 +91,8 @@ explore: issue_all_fields {
   and ${epic.name} not like 'Delete'
   and ${epic.name} not like 'DELETE'
   and ${epic.summary} not like 'Delete'
-  and ${epic.summary} not like 'DELETE';;
+  and ${epic.summary} not like 'DELETE'
+  and ${status.name} not like 'Not Needed'
+  ;;
 
 }
