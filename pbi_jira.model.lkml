@@ -35,8 +35,13 @@ explore: issue_all_fields {
     field_option.name,
 
   #Measures
-   epic.count, issue_all_fields.count_issue, issue_all_fields.total_time_to_resolve_issues_hours, issue_all_fields.avg_time_to_resolve_issues_hours,
-   issue_all_fields.total_story_points, issue_type.count, project.count, sprint.count, status.count, issue_all_fields.summary_list]
+   epic.count, epic.count_epic_distinct,
+   issue_all_fields.count_issue, issue_all_fields.count_issue_distinct,
+   issue_type.count,
+   project.count,
+   sprint.count,
+   status.count
+  ]
 
 
   join: epic {
