@@ -901,7 +901,7 @@ view: issue_all_fields {
 
   measure: count_issue_distinct {
     type:  count_distinct
-    drill_fields: [assignee]
+    drill_fields: [id, key, assignee]
   }
 
 # Additional field for a simple way to determine
