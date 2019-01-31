@@ -87,6 +87,6 @@ explore: issue_all_fields {
   }
 
 #this is a filter that cannot be viewed or removed from the explore menu
-  sql_always_where: ${project.name} like 'PBI' and ${status.name} not like 'Not Needed';;
+  sql_always_where: ${project.name} like 'PBI';;
 
 }
