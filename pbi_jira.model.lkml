@@ -1,5 +1,7 @@
 connection: "snowflakedb"
 
+#travis test
+
 # include all the views
 include: "*.view"
 
