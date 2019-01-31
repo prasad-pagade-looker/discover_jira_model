@@ -87,6 +87,10 @@ explore: issue_all_fields {
   }
 
 #this is a filter that cannot be viewed or removed from the explore menu
-  sql_always_where: ${project.name} like 'PBI' and ${epic.name} not like 'Delete' and ${epic.name} not like 'DELETE' ;;
+  sql_always_where: ${project.name} like 'PBI'
+  and ${epic.name} not like 'Delete'
+  and ${epic.name} not like 'DELETE'
+  and ${epic.summary} not like 'Delete'
+  and ${epic.summary} not like 'DELETE';;
 
 }
