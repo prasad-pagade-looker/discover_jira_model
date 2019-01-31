@@ -9,11 +9,9 @@ include: "*.view"
 include: "*.dashboard"
 
 explore: issue_all_fields {
-  label: "Issues - PBI"
+  label: "PBI - JIRA"
   #view_label: "Issues - Main"
   fields: [
-    #Epic Table
-    #epic.done, epic.key, epic.name, epic.summary,
 
     #Issue Table
     issue_all_fields.key, issue_all_fields.summary, issue_all_fields.status, issue_all_fields.assignee, issue_all_fields.target_complete_date,
@@ -34,11 +32,11 @@ explore: issue_all_fields {
     status.name,
 
     #Field Option Table
-    field_option.name]
+    field_option.name,
 
   #Measures
-  #epic.count, issue_all_fields.count_issue, issue_all_fields.total_time_to_resolve_issues_hours, issue_all_fields.avg_time_to_resolve_issues_hours,
-  #issue_all_fields.total_story_points, issue_type.count, project.count, sprint.count, status.count, issue_all_fields.summary_list]
+   epic.count, issue_all_fields.count_issue, issue_all_fields.total_time_to_resolve_issues_hours, issue_all_fields.avg_time_to_resolve_issues_hours,
+   issue_all_fields.total_story_points, issue_type.count, project.count, sprint.count, status.count, issue_all_fields.summary_list]
 
 
   join: epic {
@@ -82,5 +80,8 @@ explore: issue_all_fields {
     sql_on: ${issue_all_fields.customer_organization} = ${field_option.id} ;;
     relationship: many_to_one
   }
+
+#this is a filter that cannot be viewed or removed from the explore menu
+  sql_always_where: ${project.name} like 'PBI' ;;
 
 }

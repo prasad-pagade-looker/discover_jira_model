@@ -899,6 +899,11 @@ view: issue_all_fields {
     drill_fields: [detail*]
   }
 
+  measure: count_issue_distinct {
+    type:  count_distinct
+    drill_fields: [assignee]
+  }
+
 # Additional field for a simple way to determine
   # if an issue is resolved
   dimension: is_issue_resolved {
