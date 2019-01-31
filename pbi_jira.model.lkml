@@ -17,7 +17,7 @@ explore: issue_all_fields {
     issue_all_fields.key, issue_all_fields.summary, issue_all_fields.status, issue_all_fields.assignee, issue_all_fields.target_complete_date,
 
     #Epic table
-    epic.name, epic.key,
+    epic.name, epic.key,epic.summary,
 
     #Issue Type Table
     issue_type.name,
