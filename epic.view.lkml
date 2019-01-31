@@ -48,6 +48,6 @@ view: epic {
 
   measure: count_epic_distinct {
     type:  count_distinct
-    drill_fields: [key, name]
+    drill_fields: [id, key, name]
   }
 }
