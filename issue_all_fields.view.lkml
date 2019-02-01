@@ -979,7 +979,11 @@ view: issue_all_fields {
       field: days_to_complete
       value: ">0 AND <7"
     }
-    drill_fields: [issue_all_fields.key, issue_all_fields.assignee, target_complete_date, sprint.name]
+    filters: {
+      field: status.name
+      value: "-7 - Completed"
+    }
+    drill_fields: [issue_all_fields.key, issue_all_fields.assignee, target_complete_date, sprint.name, status.name]
   }
 
   measure: past_due {
@@ -988,7 +992,11 @@ view: issue_all_fields {
       field: days_to_complete
       value: "<-3"
     }
-    drill_fields: [issue_all_fields.key, issue_all_fields.assignee, target_complete_date, sprint.name]
+    filters: {
+      field: status.name
+      value: "-7 - Completed"
+    }
+    drill_fields: [issue_all_fields.key, issue_all_fields.assignee, target_complete_date, sprint.name, status.name]
   }
 
   dimension: current_date {
