@@ -46,8 +46,8 @@ view: epic {
     drill_fields: [id, name, issue_epic_link_history.count]
   }
 
-  measure: count_epic_distinct {
-    type:  count_distinct
+  measure: count_epic_pbi {
+    type:  count
     drill_fields: [id, key, name]
   }
 }

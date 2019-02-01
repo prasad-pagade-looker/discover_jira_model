@@ -35,8 +35,8 @@ explore: issue_all_fields {
     field_option.name,
 
   #Measures
-   epic.count, epic.count_epic_distinct,
-   issue_all_fields.count_issue, issue_all_fields.count_issue_distinct,
+   epic.count, epic.count_epic_pbi,
+   issue_all_fields.count_issue, issue_all_fields.count_issue_pbi,
    issue_type.count,
    project.count,
    sprint.count,

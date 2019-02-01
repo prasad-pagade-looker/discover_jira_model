@@ -899,8 +899,8 @@ view: issue_all_fields {
     drill_fields: [detail*]
   }
 
-  measure: count_issue_distinct {
-    type:  count_distinct
+  measure: count_issue_pbi {
+    type:  count
     drill_fields: [id, key, assignee]
   }
 
