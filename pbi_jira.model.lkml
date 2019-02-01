@@ -34,6 +34,9 @@ explore: issue_all_fields {
     #Field Option Table
     field_option.name,
 
+    #Issue Status History Table
+    issue_status_history.time_date,
+
   #Measures
    epic.count, epic.count_epic_pbi,
    issue_all_fields.count_issue, issue_all_fields.count_issue_pbi,
@@ -84,6 +87,12 @@ explore: issue_all_fields {
     type: left_outer
     sql_on: ${issue_all_fields.customer_organization} = ${field_option.id} ;;
     relationship: many_to_one
+  }
+
+  join: issue_status_history {
+    type:  left_outer
+    sql_on:  ${issue_all_fields.id} = ${issue_status_history.issue_id};;
+    relationship: one_to_many
   }
 
 #this is a filter that cannot be viewed or removed from the explore menu
