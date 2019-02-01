@@ -901,7 +901,7 @@ view: issue_all_fields {
 
   measure: count_issue_pbi {
     type:  count
-    drill_fields: [id, key, assignee, summary]
+    drill_fields: [id, key, summary, assignee]
   }
 
 # Additional field for a simple way to determine
