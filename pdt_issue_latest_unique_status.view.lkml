@@ -18,6 +18,7 @@ view: pdt_issue_latest_unique_status {
 
     dimension: issue_key {
       type: string
+      primary_key: yes
       sql: ${TABLE}.issue_key ;;
     }
 
