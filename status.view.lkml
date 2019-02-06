@@ -142,21 +142,21 @@
 
     measure: data_services_percent_backlog {
       type: number
-      value_format_name: percent_1
+      value_format_name: percent_0
       sql: 1.0*${data_services_backlog_count} / NULLIF(${data_services_total_task_count},0) ;;
       drill_fields: [issue_all_fields.key, issue_all_fields.assignee]
     }
 
     measure: data_services_percent_in_progress {
       type: number
-      value_format_name: percent_1
+      value_format_name: percent_0
       sql: 1.0*${data_services_in_progress_count} / NULLIF(${data_services_total_task_count},0) ;;
       drill_fields: [issue_all_fields.key, issue_all_fields.assignee]
     }
 
     measure: data_services_percent_done {
       type: number
-      value_format_name: percent_1
+      value_format_name: percent_0
       sql: 1.0*${data_services_done_count} / NULLIF(${data_services_total_task_count},0) ;;
       drill_fields: [issue_all_fields.key, issue_all_fields.assignee]
     }
