@@ -95,6 +95,12 @@ explore: issue_all_fields {
     relationship: many_to_one
   }
 
+  join: pdt_issue_latest_unique_status {
+    type: left_outer
+    sql_on: ${issue_all_fields.key} = ${pdt_issue_latest_unique_status.issue_key} ;;
+    relationship: one_to_many
+  }
+
 }
 
 
