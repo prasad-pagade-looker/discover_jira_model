@@ -34,6 +34,40 @@ view: pdt_issue_latest_unique_status {
     measure: count {
       type: count_distinct
       sql: ${TABLE}.issue_key ;;
+      drill_fields: [issue_all_fields.key, issue_all_fields.assignee, issue_all_fields.target_complete_date, sprint.name, status.name]
+    }
+
+    dimension: days_to_complete {
+      type: number
+      sql: DATEDIFF(d,${most_recent_status_change},${issue_all_fields.target_complete_date} ) ;;
+      value_format_name: decimal_0
+      drill_fields: [issue_all_fields.key, issue_all_fields.assignee, sprint.name]
+    }
+
+    measure: due_in_7_days {
+      type: count
+      filters: {
+        field: days_to_complete
+        value: ">0 AND <7"
+      }
+      filters: {
+        field: status.name
+        value: "-7 - Completed"
+      }
+      drill_fields: [issue_all_fields.key, issue_all_fields.assignee, issue_all_fields.target_complete_date, sprint.name, status.name]
+    }
+
+    measure: past_due {
+      type: count
+      filters: {
+        field: days_to_complete
+        value: "<-3"
+      }
+      filters: {
+        field: status.name
+        value: "-7 - Completed"
+      }
+      drill_fields: [issue_all_fields.key, issue_all_fields.assignee, issue_all_fields.target_complete_date, sprint.name, status.name]
     }
 
 
