@@ -103,10 +103,34 @@
       value_format: "0"
     }
 
+    measure: data_services_backlog_count {
+      type: number
+      sql: COUNT(CASE WHEN (status.NAME = 'Backlog') THEN status.ID  ELSE NULL END);;
+      value_format: "0"
+    }
+
+    measure: data_services_in_progress_count {
+      type: number
+      sql: COUNT(CASE WHEN (status.NAME = 'In Progress') THEN status.ID  ELSE NULL END);;
+      value_format: "0"
+    }
+
+    measure: data_services_done_count {
+      type: number
+      sql: COUNT(CASE WHEN (status.NAME = 'Done') THEN status.ID  ELSE NULL END);;
+      value_format: "0"
+    }
+
     measure: total_task_count {
       type: number
       sql: ${0_backlog_count}+${1_newly_assigned_count}+${2_not_started_count}+${3_not_started_behind_count}+${4_in_progress_on_time_count}+${5_in_progress_behind_count}+${6_ready_for_sign_off_count}+${7_completed_count}+${9_on_going_work_count} ;;
       drill_fields: [issue_all_fields.key, issue_all_fields.assignee, sprint.name]
+    }
+
+    measure: data_services_total_task_count {
+      type: number
+      sql: ${data_services_backlog_count}+${data_services_in_progress_count}+${data_services_done_count} ;;
+      drill_fields: [issue_all_fields.key, issue_all_fields.assignee]
     }
 
     measure: percent_complete {
@@ -115,5 +139,32 @@
       value_format: "0%"
       drill_fields: [issue_all_fields.key, issue_all_fields.assignee, sprint.name]
     }
+
+    measure: data_services_percent_backlog {
+      type: number
+      value_format_name: percent_1
+      sql: 1.0*${data_services_backlog_count} / NULLIF(${data_services_total_task_count},0) ;;
+      drill_fields: [issue_all_fields.key, issue_all_fields.assignee]
+    }
+
+    measure: data_services_percent_in_progress {
+      type: number
+      value_format_name: percent_1
+      sql: 1.0*${data_services_in_progress_count} / NULLIF(${data_services_total_task_count},0) ;;
+      drill_fields: [issue_all_fields.key, issue_all_fields.assignee]
+    }
+
+    measure: data_services_percent_done {
+      type: number
+      value_format_name: percent_1
+      sql: 1.0*${data_services_done_count} / NULLIF(${data_services_total_task_count},0) ;;
+      drill_fields: [issue_all_fields.key, issue_all_fields.assignee]
+    }
+
+
+
+
+
+
 
 }
