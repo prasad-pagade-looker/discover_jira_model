@@ -904,6 +904,8 @@ view: issue_all_fields {
     drill_fields: [id, key, summary, assignee]
   }
 
+
+
 # Additional field for a simple way to determine
   # if an issue is resolved
   dimension: is_issue_resolved {
@@ -998,6 +1000,9 @@ view: issue_all_fields {
     }
     drill_fields: [issue_all_fields.key, issue_all_fields.assignee, target_complete_date, sprint.name, status.name]
   }
+
+
+
 
   dimension: current_date {
     type: date
