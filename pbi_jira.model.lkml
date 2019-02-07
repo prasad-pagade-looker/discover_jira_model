@@ -127,7 +127,8 @@ explore: issue_data_services {
     #issue_status_history.time_date,
 
     #Measures
-    issue_data_services.count_issue, issue_data_services.count_issue_pbi,issue_data_services.total_time_spent,issue_data_services.total_requesters,
+    issue_data_services.count_issue, issue_data_services.count_issue_pbi,issue_data_services.total_time_spent,issue_data_services.avg_time_spent,
+    issue_data_services.total_requesters,
     project.count,
     status.count
   ]
