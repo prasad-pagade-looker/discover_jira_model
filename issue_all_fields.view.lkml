@@ -769,6 +769,17 @@ view: issue_all_fields {
     sql: ${TABLE}."TAG_CREATED_" ;;
   }
 
+  dimension: projected_date_of_completion {
+    type: date
+    sql: ${TABLE}."PROJECTED_DATE_OF_COMPLETION" ;;
+  }
+
+  dimension: number_of_lists {
+    type: date
+    sql: ${TABLE}."NUMBER_OF_LISTS" ;;
+  }
+
+
   ############## Special Dimension to sort the summary field ########
 
   dimension: is_epic {
