@@ -111,53 +111,26 @@ explore: issue_data_services {
 
     #Issue Table
     issue_data_services.key, issue_data_services.summary, issue_data_services.assignee, issue_data_services.original_requester,
-    issue_data_services.projected_date_of_completion,
-
-    #Epic table
-    epic.name, epic.key,epic.summary,
-
-    #Issue Type Table
-    issue_type.name,
+    issue_data_services.projected_date_of_completion, issue_data_services.number_of_lists, issue_data_services.time_spent,
+    issue_data_services.created_date,
 
     #Project Table
     project.name,
 
-    #Sprint Table
-    sprint.name,
-
     #Status Table
     status.name,
-    status.pbi_percent_backlog, status.pbi_percent_newly_assigned, status.pbi_percent_not_started,status.pbi_percent_not_started_behind,
-    status.pbi_percent_in_progress_on_time, status.pbi_percent_in_progress_behind, status.pbi_percent_ready_for_sign_off, status.pbi_percent_completed,
-    status.pbi_percent_not_needed, status.pbi_percent_on_going,
 
     #Field Option Table
     field_option.name,
 
     #Issue Status History Table
-    issue_status_history.time_date,
+    #issue_status_history.time_date,
 
     #Measures
-    epic.count, epic.count_epic_pbi,
     issue_data_services.count_issue, issue_data_services.count_issue_pbi,
-    issue_type.count,
     project.count,
-    sprint.count,
     status.count
   ]
-
-
-  join: epic {
-    type: left_outer
-    sql_on: ${issue_data_services.epic_link} = ${epic.id} ;;
-    relationship: many_to_one
-  }
-
-  join: issue_type {
-    type: left_outer
-    sql_on: ${issue_data_services.issue_type} = ${issue_type.id} ;;
-    relationship: many_to_one
-  }
 
   join: project {
     type: left_outer
@@ -171,21 +144,9 @@ explore: issue_data_services {
     relationship: many_to_one
   }
 
-  join: issue_sprint {
-    type: left_outer
-    sql_on: ${issue_data_services.id} = ${issue_sprint.issue_id} ;;
-    relationship: one_to_many
-  }
-
-  join: sprint {
-    type: left_outer
-    sql_on: ${issue_sprint.sprint_id} = ${sprint.id} ;;
-    relationship: many_to_one
-  }
-
   join: field_option {
     type: left_outer
-    sql_on: ${issue_data_services.customer_organization} = ${field_option.id} ;;
+    sql_on: ${issue_data_services.ticket_type} = ${field_option.id} ;;
     relationship: many_to_one
   }
 
