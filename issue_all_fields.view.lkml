@@ -926,6 +926,12 @@ measure: total_time_spent {
   sql:  ${time_spent} / 3600 ;;
 }
 
+  measure: total_requesters {
+    type: count_distinct
+    sql: ${original_requester} ;;
+
+  }
+
 
 # Additional field for a simple way to determine
   # if an issue is resolved
