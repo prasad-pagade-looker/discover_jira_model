@@ -30,12 +30,12 @@ explore: issue_all_fields {
 
     #Status Table
     status.name,
-    status.pbi_percent_backlog, status.pbi_percent_newly_assigned, status.pbi_percent_not_started,status.pbi_percent_not_started_behind,
-    status.pbi_percent_in_progress_on_time, status.pbi_percent_in_progress_behind, status.pbi_percent_ready_for_sign_off, status.pbi_percent_completed,
-    status.pbi_percent_not_needed, status.pbi_percent_on_going,
 
     #Field Option Table
     field_option.name,
+
+    #Field Option 2 Table
+    field_option_2.name,
 
     #Issue Status History Table
     issue_status_history.time_date,
