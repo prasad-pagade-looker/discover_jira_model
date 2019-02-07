@@ -98,6 +98,20 @@ explore: issue_all_fields {
     relationship: one_to_many
   }
 
+  join: issue_corporate_objectives {
+    type:  left_outer
+    sql_on:  ${issue_all_fields.id} = ${issue_corporate_objectives.issue_id} ;;
+    relationship:  one_to_many
+  }
+
+  join: field_option_2 {
+    from:  field_option
+    type:  left_outer
+    sql_on: ${issue_corporate_objectives.field_option_id} = ${field_option_2.id};;
+    relationship: many_to_one
+
+  }
+
 #this is a filter that cannot be viewed or removed from the explore menu
   sql_always_where: ${project.name} like 'PBI';;
 
