@@ -780,7 +780,7 @@ view: issue_all_fields {
   }
 
   dimension: ticket_type {
-    type: date
+    type: number
     sql: ${TABLE}."TICKET_TYPE" ;;
   }
 
