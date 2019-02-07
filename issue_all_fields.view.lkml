@@ -921,6 +921,10 @@ view: issue_all_fields {
     drill_fields: [id, key, summary, assignee, status.name]
   }
 
+measure: total_time_spent {
+  type: sum
+  sql:  ${time_spent} ;;
+}
 
 
 # Additional field for a simple way to determine
