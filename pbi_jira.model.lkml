@@ -112,7 +112,7 @@ explore: issue_data_services {
     #Issue Table
     issue_data_services.key, issue_data_services.summary, issue_data_services.assignee, issue_data_services.original_requester,
     issue_data_services.projected_date_of_completion, issue_data_services.number_of_lists, issue_data_services.time_spent,
-    issue_data_services.created_date,
+    issue_data_services.created_date,issue_data_services.created_week, issue_data_services.created_month,
 
     #Project Table
     project.name,
