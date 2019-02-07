@@ -142,28 +142,94 @@
 
     measure: data_services_percent_backlog {
       type: number
-      value_format_name: percent_1
+      value_format_name: percent_0
       sql: 1.0*${data_services_backlog_count} / NULLIF(${data_services_total_task_count},0) ;;
       drill_fields: [issue_all_fields.key, issue_all_fields.assignee]
     }
 
     measure: data_services_percent_in_progress {
       type: number
-      value_format_name: percent_1
+      value_format_name: percent_0
       sql: 1.0*${data_services_in_progress_count} / NULLIF(${data_services_total_task_count},0) ;;
       drill_fields: [issue_all_fields.key, issue_all_fields.assignee]
     }
 
     measure: data_services_percent_done {
       type: number
-      value_format_name: percent_1
+      value_format_name: percent_0
       sql: 1.0*${data_services_done_count} / NULLIF(${data_services_total_task_count},0) ;;
       drill_fields: [issue_all_fields.key, issue_all_fields.assignee]
     }
 
+    measure: pbi_percent_backlog {
+      type: number
+      value_format_name: percent_0
+      sql: 1.0*${0_backlog_count} / NULLIF(${total_task_count},0) ;;
+      drill_fields: [issue_all_fields.key, issue_all_fields.assignee]
+    }
 
+    measure: pbi_percent_newly_assigned {
+      type: number
+      value_format_name: percent_0
+      sql: 1.0*${1_newly_assigned_count} / NULLIF(${total_task_count},0) ;;
+      drill_fields: [issue_all_fields.key, issue_all_fields.assignee]
+    }
 
+    measure: pbi_percent_not_started {
+      type: number
+      value_format_name: percent_0
+      sql: 1.0*${2_not_started_count} / NULLIF(${total_task_count},0) ;;
+      drill_fields: [issue_all_fields.key, issue_all_fields.assignee]
+    }
 
+    measure: pbi_percent_not_started_behind {
+      type: number
+      value_format_name: percent_0
+      sql: 1.0*${3_not_started_behind_count} / NULLIF(${total_task_count},0) ;;
+      drill_fields: [issue_all_fields.key, issue_all_fields.assignee]
+    }
+
+    measure: pbi_percent_in_progress_on_time {
+      type: number
+      value_format_name: percent_0
+      sql: 1.0*${4_in_progress_on_time_count} / NULLIF(${total_task_count},0) ;;
+      drill_fields: [issue_all_fields.key, issue_all_fields.assignee]
+    }
+
+    measure: pbi_percent_in_progress_behind {
+      type: number
+      value_format_name: percent_0
+      sql: 1.0*${5_in_progress_behind_count} / NULLIF(${total_task_count},0) ;;
+      drill_fields: [issue_all_fields.key, issue_all_fields.assignee]
+    }
+
+    measure: pbi_percent_ready_for_sign_off {
+      type: number
+      value_format_name: percent_0
+      sql: 1.0*${6_ready_for_sign_off_count} / NULLIF(${total_task_count},0) ;;
+      drill_fields: [issue_all_fields.key, issue_all_fields.assignee]
+    }
+
+    measure: pbi_percent_completed {
+      type: number
+      value_format_name: percent_0
+      sql: 1.0*${7_completed_count} / NULLIF(${total_task_count},0) ;;
+      drill_fields: [issue_all_fields.key, issue_all_fields.assignee]
+    }
+
+    measure: pbi_percent_not_needed {
+      type: number
+      value_format_name: percent_0
+      sql: 1.0*${8_not_needed_count} / NULLIF(${total_task_count},0) ;;
+      drill_fields: [issue_all_fields.key, issue_all_fields.assignee]
+    }
+
+    measure: pbi_percent_on_going {
+      type: number
+      value_format_name: percent_0
+      sql: 1.0*${9_on_going_work_count} / NULLIF(${total_task_count},0) ;;
+      drill_fields: [issue_all_fields.key, issue_all_fields.assignee]
+    }
 
 
 

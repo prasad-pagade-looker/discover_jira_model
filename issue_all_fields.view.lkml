@@ -769,6 +769,23 @@ view: issue_all_fields {
     sql: ${TABLE}."TAG_CREATED_" ;;
   }
 
+  dimension: projected_date_of_completion {
+    type: date
+    sql: ${TABLE}."PROJECTED_DATE_OF_COMPLETION" ;;
+  }
+
+  dimension: number_of_lists {
+    type: date
+    sql: ${TABLE}."NUMBER_OF_LISTS" ;;
+  }
+
+  dimension: ticket_type {
+    type: number
+    sql: ${TABLE}."TICKET_TYPE" ;;
+  }
+
+
+
   ############## Special Dimension to sort the summary field ########
 
   dimension: is_epic {
@@ -901,9 +918,24 @@ view: issue_all_fields {
 
   measure: count_issue_pbi {
     type:  count
-    drill_fields: [id, key, summary, assignee]
+    drill_fields: [id, key, summary, assignee, status.name]
   }
 
+measure: total_time_spent {
+  type: sum
+  sql:  ${time_spent} / 3600 ;;
+}
+
+  measure: avg_time_spent {
+    type: average
+    sql:  ${time_spent} / 3600 ;;
+  }
+
+  measure: total_requesters {
+    type: count_distinct
+    sql: ${original_requester} ;;
+
+  }
 
 
 # Additional field for a simple way to determine
