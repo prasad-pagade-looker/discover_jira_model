@@ -923,7 +923,7 @@ view: issue_all_fields {
 
 measure: total_time_spent {
   type: sum
-  sql:  ${time_spent} / 360 ;;
+  sql:  ${time_spent} / 3600 ;;
 }
 
 
