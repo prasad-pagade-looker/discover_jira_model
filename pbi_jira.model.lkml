@@ -110,7 +110,8 @@ explore: issue_data_services {
   fields: [
 
     #Issue Table
-    issue_data_services.key, issue_data_services.summary, issue_data_services.status, issue_data_services.assignee, issue_data_services.target_complete_date,
+    issue_data_services.key, issue_data_services.summary, issue_data_services.assignee, issue_data_services.original_requester,
+    issue_data_services.projected_date_of_completion,
 
     #Epic table
     epic.name, epic.key,epic.summary,
