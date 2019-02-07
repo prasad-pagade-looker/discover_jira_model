@@ -3,7 +3,8 @@ view: pdt_issue_latest_unique_status {
     sql: select
     glob."issue_all_fields.key" as issue_key,
     glob."status.name" as status_name,
-    to_char(glob."issue_status_history.max_date", 'YYYY-MM-DD') as most_recent_status_change
+    --to_date(glob."issue_status_history.max_date", 'YYYY-MM-DD') as most_recent_status_change
+    glob."issue_status_history.max_date" as most_recent_status_change
     from (SELECT
     issue_all_fields."KEY"  AS "issue_all_fields.key",
     status.name as "status.name"  ,
@@ -27,8 +28,9 @@ view: pdt_issue_latest_unique_status {
       sql: ${TABLE}.status_name ;;
     }
 
-    dimension: most_recent_status_change {
-      type: string
+    dimension_group: most_recent_status_change {
+      type: time
+      timeframes: [raw,date]
       sql: ${TABLE}.most_recent_status_change ;;
     }
 
@@ -38,15 +40,9 @@ view: pdt_issue_latest_unique_status {
       drill_fields: [issue_all_fields.key, issue_all_fields.assignee, issue_all_fields.target_complete_date, sprint.name, status.name]
     }
 
-    measure: running_total {
-      type: number
-      sql: count(${most_recent_status_change}) over (partition by ${most_recent_status_change} order by ${most_recent_status_change} rows between unbounded preceding and current row) ;;
-      drill_fields: [issue_all_fields.key, issue_all_fields.assignee, issue_all_fields.target_complete_date, sprint.name, status.name]
-    }
-
     dimension: days_to_complete {
       type: number
-      sql: DATEDIFF(d,${most_recent_status_change},${issue_all_fields.target_complete_date} ) ;;
+      sql: DATEDIFF(d,${most_recent_status_change_date},${issue_all_fields.target_complete_date} ) ;;
       value_format_name: decimal_0
       drill_fields: [issue_all_fields.key, issue_all_fields.assignee, sprint.name]
     }

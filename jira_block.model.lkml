@@ -101,6 +101,18 @@ explore: issue_all_fields {
     relationship: one_to_many
   }
 
+  join: pdt_liquid_status_change {
+    type: left_outer
+    sql_on: ${issue_all_fields.key} = ${pdt_liquid_status_change.issue_key} ;;
+    relationship: one_to_many
+  }
+
+  join: issue_viewers {
+    type: left_outer
+    sql_on: ${issue_all_fields.id} = ${issue_viewers.issue_id} ;;
+    relationship: one_to_many
+  }
+
 }
 
 
