@@ -779,6 +779,12 @@ view: issue_all_fields {
     sql: ${TABLE}."NUMBER_OF_LISTS" ;;
   }
 
+  dimension: ticket_type {
+    type: date
+    sql: ${TABLE}."TICKET_TYPE" ;;
+  }
+
+
 
   ############## Special Dimension to sort the summary field ########
 
