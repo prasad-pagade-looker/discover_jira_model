@@ -137,8 +137,8 @@ explore: issue_data_services {
     #Field Option Table
     field_option.name,
 
-    #Issue Status History Table
-    #issue_status_history.time_date,
+    #Issue Most Recent Update View
+    issue_most_recent_update.complete_date, issue_most_recent_update.complete_time,
 
     #Measures
     issue_data_services.count_issue, issue_data_services.count_issue_pbi,issue_data_services.total_time_spent,issue_data_services.avg_time_spent,
