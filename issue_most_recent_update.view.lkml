@@ -1,6 +1,6 @@
 view: issue_most_recent_update {
   derived_table: {
-    sql: select tbl."ID",tbl."KEY",tbl."SUMMARY",tbl.most_recent_status_date,tbl.most_recent_status_time,tbl."NAME"
+    sql: select tbl."ID",tbl."KEY",tbl."SUMMARY",tbl.most_recent_status_time,tbl."NAME"
       from (
       select
       i."ID",
