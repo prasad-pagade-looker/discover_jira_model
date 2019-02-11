@@ -103,7 +103,7 @@ explore: issue_all_fields {
 
   join: pdt_liquid_status_change {
     type: left_outer
-    sql_on: ${issue_all_fields.key} = ${pdt_liquid_status_change.issue_key} ;;
+    sql_on: ${project.name} = ${pdt_liquid_status_change.project_name} ;;
     relationship: one_to_many
   }
 
