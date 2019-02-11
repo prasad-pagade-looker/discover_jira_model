@@ -138,7 +138,7 @@ explore: issue_data_services {
     field_option.name,
 
     #Issue Most Recent Update View
-    issue_most_recent_update.complete_date, issue_most_recent_update.complete_time,
+    issue_most_recent_update.is_completed_ticket,
 
     #Measures
     issue_data_services.count_issue, issue_data_services.count_issue_pbi,issue_data_services.total_time_spent,issue_data_services.avg_time_spent,
