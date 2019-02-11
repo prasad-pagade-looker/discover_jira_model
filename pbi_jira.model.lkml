@@ -138,8 +138,8 @@ explore: issue_data_services {
     field_option.name,
 
     #Issue Most Recent Update View
-    issue_most_recent_update.is_completed_ticket,issue_most_recent_update.created_raw,
-    issue_most_recent_update.created_time,issue_most_recent_update.created_date,issue_most_recent_update.created_week,
+    issue_most_recent_update.is_completed_ticket,issue_most_recent_update.completed_raw,
+    issue_most_recent_update.completed_time,issue_most_recent_update.completed_date,issue_most_recent_update.completed_week,
 
     #Measures
     issue_data_services.count_issue, issue_data_services.count_issue_pbi,issue_data_services.total_time_spent,issue_data_services.avg_time_spent,

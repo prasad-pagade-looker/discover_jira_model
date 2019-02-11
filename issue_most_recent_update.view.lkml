@@ -40,7 +40,7 @@ view: issue_most_recent_update {
   }
 
 
-  dimension_group: created {
+  dimension_group: completed {
     type: time
     timeframes: [raw, time, date, hour, week]
     sql: ${TABLE}."MOST_RECENT_STATUS_TIME" ;;
