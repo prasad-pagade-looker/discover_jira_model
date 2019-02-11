@@ -6,7 +6,6 @@ view: issue_most_recent_update {
       i."ID",
       i."KEY",
       i."SUMMARY",
-      to_date(ish."TIME") as most_recent_status_date,
       ish."TIME" as most_recent_status_time,
       s."NAME",
       row_number() over (partition by ish."ISSUE_ID" order by ish."TIME" desc) as row_number
