@@ -56,6 +56,14 @@ dimension: is_completed_ticket {
   sql: ${name} = 'Done' ;;
 }
 
+measure: completed_ticket_count {
+  type:  count
+  filters: {
+    field: is_completed_ticket
+    value: "Yes"
+  }
+}
+
 
   set: detail {
     fields: [
