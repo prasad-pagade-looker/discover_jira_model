@@ -15,7 +15,7 @@ view: issue_most_recent_update {
       LEFT OUTER JOIN CONNECTORS.JIRA.STATUS as s on ish."STATUS_ID" = s."ID"
       LEFT OUTER join CONNECTORS.JIRA.PROJECT as p on i."PROJECT" = p."ID"
       ) as tbl
-      where tbl."ROW_NUMBER" = 1;
+      where tbl."ROW_NUMBER" = 1
        ;;
   }
 
