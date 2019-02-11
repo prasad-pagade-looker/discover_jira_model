@@ -56,6 +56,18 @@ view: issue_most_recent_update {
     sql: ${TABLE}."NAME" ;;
   }
 
+  dimension: complete_date {
+    type: date
+    sql:  ${name} = 'Done' ;;
+  }
+
+  dimension: complete_time {
+    type: date_time
+    sql:  ${name} = 'Done' ;;
+  }
+
+
+
   set: detail {
     fields: [
       id,
