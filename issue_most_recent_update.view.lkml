@@ -27,6 +27,7 @@ view: issue_most_recent_update {
 
   dimension: id {
     type: number
+    primary_key: yes
     sql: ${TABLE}."ID" ;;
   }
 
