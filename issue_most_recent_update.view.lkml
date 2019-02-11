@@ -14,8 +14,7 @@ view: issue_most_recent_update {
       LEFT OUTER JOIN CONNECTORS.JIRA.ISSUE as i on ish."ISSUE_ID" = i."ID"
       LEFT OUTER JOIN CONNECTORS.JIRA.STATUS as s on ish."STATUS_ID" = s."ID"
       LEFT OUTER join CONNECTORS.JIRA.PROJECT as p on i."PROJECT" = p."ID"
-      where i."PROJECT" = 16464
-      and to_date(ish."TIME") IS NOT NULL) as tbl
+      ) as tbl
       where tbl."ROW_NUMBER" = 1;
        ;;
   }
