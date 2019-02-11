@@ -923,16 +923,21 @@ view: issue_all_fields {
 
 measure: total_time_spent {
   type: sum
+  value_format_name: decimal_0
+  drill_fields: [id, key, summary, assignee, time_spent, status.name]
   sql:  ${time_spent} / 3600 ;;
 }
 
   measure: avg_time_spent {
     type: average
+    value_format_name:  decimal_2
+    drill_fields: [id, key, summary, assignee, time_spent, status.name]
     sql:  ${time_spent} / 3600 ;;
   }
 
   measure: total_requesters {
     type: count_distinct
+    drill_fields: [original_requester, key, summary]
     sql: ${original_requester} ;;
 
   }
