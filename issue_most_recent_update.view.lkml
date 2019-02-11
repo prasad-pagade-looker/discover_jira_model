@@ -39,13 +39,10 @@ view: issue_most_recent_update {
     sql: ${TABLE}."SUMMARY" ;;
   }
 
-  dimension: most_recent_status_date {
-    type: date
-    sql: ${TABLE}."MOST_RECENT_STATUS_DATE" ;;
-  }
 
   dimension_group: most_recent_status_time {
     type: time
+    timeframes: [raw, time, date, hour, week]
     sql: ${TABLE}."MOST_RECENT_STATUS_TIME" ;;
   }
 
@@ -65,7 +62,6 @@ dimension: is_completed_ticket {
       id,
       key,
       summary,
-      most_recent_status_date,
       most_recent_status_time_time,
       name
     ]
