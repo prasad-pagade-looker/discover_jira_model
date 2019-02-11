@@ -171,6 +171,12 @@ explore: issue_data_services {
     relationship: one_to_many
   }
 
+  join: issue_most_recent_update {
+    type:  left_outer
+    sql_on:  ${issue_data_services.id} = ${issue_most_recent_update.id} ;;
+    relationship:  one_to_one
+  }
+
 #this is a filter that cannot be viewed or removed from the explore menu
   sql_always_where: ${project.name} like 'DS';;
 
