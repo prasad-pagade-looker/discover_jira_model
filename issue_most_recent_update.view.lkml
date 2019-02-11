@@ -40,7 +40,7 @@ view: issue_most_recent_update {
   }
 
 
-  dimension_group: most_recent_status_time {
+  dimension_group: created {
     type: time
     timeframes: [raw, time, date, hour, week]
     sql: ${TABLE}."MOST_RECENT_STATUS_TIME" ;;
@@ -62,7 +62,6 @@ dimension: is_completed_ticket {
       id,
       key,
       summary,
-      most_recent_status_time_time,
       name
     ]
   }
