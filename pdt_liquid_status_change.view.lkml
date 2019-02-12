@@ -46,18 +46,23 @@ view: pdt_liquid_status_change {
     FROM lstat_piv
     )
     GROUP BY 1,2
+    ),
+    issue_join AS (
+    SELECT max_date AS join_date, issue_key FROM data_pull
+    Group BY 1,2
     )
     SELECT
-    project_name, max_date, backlog_move AS current_backlog, newly_move AS current_newly, not_started_move AS current_not_started, not_started_behind_move AS current_not_started_behind,  in_progress_move AS current_in_progress,
+    project_name, issue_key, max_date, backlog_move AS current_backlog, newly_move AS current_newly, not_started_move AS current_not_started, not_started_behind_move AS current_not_started_behind,  in_progress_move AS current_in_progress,
     in_progress_behind_move AS current_in_progress_behind, ready_for_sign_move AS current_ready_for_sign_off, completed_move AS current_completed, not_needed_move AS current_not_needed, on_going_move AS current_on_going_work
     FROM matrix_sum
-    --WHERE project_NAME LIKE '%INF11%'
+    LEFT JOIN issue_join AS issue_join ON (issue_join.join_date) = max_date
     ;;
   }
 
   dimension: 0_backlog {
     type: number
     sql: ${TABLE}.current_backlog ;;
+    drill_fields: [issue_key, project.name, issue_all_fields.assignee]
   }
 
   dimension: 1_newly_assigned {
@@ -107,8 +112,14 @@ view: pdt_liquid_status_change {
 
   dimension: project_name {
     type: string
-    primary_key: yes
     sql: ${TABLE}.project_name ;;
+  }
+
+  dimension: issue_key {
+    type: string
+    primary_key: yes
+    sql: ${TABLE}.issue_key ;;
+    drill_fields: [issue_key, project.name, issue_all_fields.assignee]
   }
 
   dimension: last_status {
@@ -120,7 +131,7 @@ view: pdt_liquid_status_change {
     type: time
     timeframes: [
       raw,
-      millisecond100,
+      millisecond,
       time,
       date,
       week,
@@ -140,7 +151,7 @@ view: pdt_liquid_status_change {
   measure: 0_backlog_current_count {
     type: running_total
     sql: ${0_backlog}    ;;
-    drill_fields: [issue_all_fields.id, project.name, component.count, issue_project_history.count, version.count]
+    drill_fields: [issue_key, project.name, issue_all_fields.assignee]
   }
 
   measure: 1_newly_assigned_current_count {
