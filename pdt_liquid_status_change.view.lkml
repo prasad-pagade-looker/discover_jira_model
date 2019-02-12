@@ -62,7 +62,6 @@ view: pdt_liquid_status_change {
   dimension: 0_backlog {
     type: number
     sql: ${TABLE}.current_backlog ;;
-    drill_fields: [issue_key, project.name, issue_all_fields.assignee]
   }
 
   dimension: 1_newly_assigned {
@@ -119,7 +118,6 @@ view: pdt_liquid_status_change {
     type: string
     primary_key: yes
     sql: ${TABLE}.issue_key ;;
-    drill_fields: [issue_key, project.name, issue_all_fields.assignee]
   }
 
   dimension: last_status {
@@ -145,67 +143,55 @@ view: pdt_liquid_status_change {
   measure: total_count {
     type: running_total
     sql: ${0_backlog_current_count}+${1_newly_assigned_current_count}+${2_not_started_current_count}+${3_not_started_behind_current_count}+${4_in_progress_on_time_current_count}+${5_in_progress_behind_current_count}+${6_ready_for_sign_off_current_count}+${7_completed_current_count}+${8_not_needed_current_count}+${9_on_going_work_current_count}    ;;
-    drill_fields: [issue_all_fields.id, project.name, component.count, issue_project_history.count, version.count]
   }
 
   measure: 0_backlog_current_count {
     type: running_total
     sql: ${0_backlog}    ;;
-    drill_fields: [issue_key, project.name, issue_all_fields.assignee]
   }
 
   measure: 1_newly_assigned_current_count {
     type: running_total
     sql: ${1_newly_assigned}    ;;
-    drill_fields: [issue_all_fields.id, project.name, component.count, issue_project_history.count, version.count]
   }
 
   measure: 2_not_started_current_count {
     type: running_total
     sql: ${2_not_started}    ;;
-    drill_fields: [issue_all_fields.id, project.name, component.count, issue_project_history.count, version.count]
   }
 
   measure: 3_not_started_behind_current_count {
     type: running_total
     sql: ${3_not_started_behind}    ;;
-    drill_fields: [issue_all_fields.id, project.name, component.count, issue_project_history.count, version.count]
   }
 
   measure: 4_in_progress_on_time_current_count {
     type: running_total
     sql: ${4_in_progress_on_time}    ;;
-    drill_fields: [issue_all_fields.id, project.name, component.count, issue_project_history.count, version.count]
   }
 
   measure: 5_in_progress_behind_current_count {
     type: running_total
-    sql: ${5_in_progress_behind}    ;;
-    drill_fields: [issue_all_fields.id, project.name, component.count, issue_project_history.count, version.count]
   }
 
   measure: 6_ready_for_sign_off_current_count {
     type: running_total
     sql: ${6_ready_for_sign_off}    ;;
-    drill_fields: [issue_all_fields.id, project.name, component.count, issue_project_history.count, version.count]
   }
 
   measure: 7_completed_current_count {
     type: running_total
     sql: ${7_completed}    ;;
-    drill_fields: [issue_all_fields.id, project.name, component.count, issue_project_history.count, version.count]
   }
 
   measure: 8_not_needed_current_count {
     type: running_total
     sql: ${8_not_needed}    ;;
-    drill_fields: [issue_all_fields.id, project.name, component.count, issue_project_history.count, version.count]
   }
 
   measure: 9_on_going_work_current_count {
     type: running_total
     sql: ${9_on_going_work}    ;;
-    drill_fields: [issue_all_fields.id, project.name, component.count, issue_project_history.count, version.count]
   }
 
   # # You can specify the table name if it's different from the view name:
