@@ -137,8 +137,9 @@ explore: issue_data_services {
     #Field Option Table
     field_option.name,
 
-    #Issue Status History Table
-    #issue_status_history.time_date,
+    #Issue Most Recent Update View
+    issue_most_recent_update.is_completed_ticket,issue_most_recent_update.completed_raw,
+    issue_most_recent_update.completed_time,issue_most_recent_update.completed_date,issue_most_recent_update.completed_week,
 
     #Measures
     issue_data_services.count_issue, issue_data_services.count_issue_pbi,issue_data_services.total_time_spent,issue_data_services.avg_time_spent,
@@ -169,6 +170,12 @@ explore: issue_data_services {
     type:  left_outer
     sql_on:  ${issue_data_services.id} = ${issue_status_history.issue_id};;
     relationship: one_to_many
+  }
+
+  join: issue_most_recent_update {
+    type:  left_outer
+    sql_on:  ${issue_data_services.id} = ${issue_most_recent_update.id} ;;
+    relationship:  one_to_one
   }
 
 #this is a filter that cannot be viewed or removed from the explore menu
