@@ -172,6 +172,7 @@ view: pdt_liquid_status_change {
 
   measure: 5_in_progress_behind_current_count {
     type: running_total
+    sql: ${5_in_progress_behind} ;;
   }
 
   measure: 6_ready_for_sign_off_current_count {
