@@ -145,7 +145,8 @@ explore: issue_data_services {
     issue_data_services.count_issue, issue_data_services.count_issue_pbi,issue_data_services.total_time_spent,issue_data_services.avg_time_spent,
     issue_data_services.total_requesters,
     project.count,
-    status.count
+    status.count,
+    issue_most_recent_update.completed_ticket_count
   ]
 
   join: project {
