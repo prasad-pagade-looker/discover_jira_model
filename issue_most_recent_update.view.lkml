@@ -80,7 +80,7 @@ measure: avg_turn_around_time_hours {
   measure: avg_turn_around_time_days {
     type: median
     sql:  (TIMESTAMPDIFF(h,${created_raw},${completed_raw})) / 24 ;;
-    value_format_name: decimal_1
+    value_format_name: decimal_2
   }
 
 
