@@ -47,6 +47,12 @@ view: issue_most_recent_update {
     sql: ${TABLE}."MOST_RECENT_STATUS_TIME" ;;
   }
 
+  dimension_group: created {
+    type: time
+    timeframes: [raw, time, date, hour, week]
+    sql: ${TABLE}."CREATE_TIME" ;;
+  }
+
   dimension: name {
     type: string
     sql: ${TABLE}."NAME" ;;
