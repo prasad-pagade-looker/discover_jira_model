@@ -1,11 +1,12 @@
 view: issue_most_recent_update {
   derived_table: {
-    sql: select tbl."ID",tbl."KEY",tbl."SUMMARY",tbl.most_recent_status_time,tbl."NAME"
+    sql: select tbl."ID",tbl."KEY",tbl."SUMMARY",tbl.create_time,tbl.most_recent_status_time,tbl."NAME"
       from (
       select
       i."ID",
       i."KEY",
       i."SUMMARY",
+      i."CREATED" as create_time,
       ish."TIME" as most_recent_status_time,
       s."NAME",
       row_number() over (partition by ish."ISSUE_ID" order by ish."TIME" desc) as row_number
