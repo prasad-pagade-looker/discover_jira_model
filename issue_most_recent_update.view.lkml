@@ -71,11 +71,17 @@ measure: completed_ticket_count {
   }
 }
 
-measure: avg_turn_around_time {
+measure: avg_turn_around_time_hours {
   type: median
   sql:  TIMESTAMPDIFF(h,${created_raw},${completed_raw}) ;;
-  value_format_name: decimal_1
+  value_format_name: decimal_0
 }
+
+  measure: avg_turn_around_time_days {
+    type: median
+    sql:  (TIMESTAMPDIFF(h,${created_raw},${completed_raw})) / 24 ;;
+    value_format_name: decimal_1
+  }
 
 
   set: detail {
