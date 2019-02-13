@@ -3,15 +3,16 @@ view: pdt_liquid_status_change {
     sql: with data_pull AS (
     SELECT
         project.name AS project_name,
-        MAX(issue_status_history.TIME) AS max_date,
+        issue_all_fields.created AS null_max_date,
+        IFNULL(MAX(issue_status_history.TIME), null_max_date) AS max_date,
         issue_all_fields."KEY"  AS issue_key,
-        status.name AS status_name,
+        IFNULL(status.name, '0 - Backlog') AS status_name,
         lag(status_name) OVER (partition by issue_key ORDER BY max_date ASC) AS last_status
         FROM connectors.jira.issue  AS issue_all_fields
         LEFT JOIN connectors.JIRA.ISSUE_STATUS_HISTORY  AS issue_status_history ON (issue_all_fields."ID") = issue_status_history.ISSUE_ID
         LEFT JOIN connectors.JIRA.STATUS  AS status ON (ISSUE_STATUS_HISTORY."STATUS_ID") = status.ID
         LEFT JOIN connectors.jira.project AS project on (ISSUE_ALL_FIELDS.project) = project.id
-      GROUP BY 1,3,4
+      GROUP BY 1,2,4,5
       ),
     status_piv AS (
     SELECT
@@ -41,8 +42,8 @@ view: pdt_liquid_status_change {
     SELECT project_name,  max_date, "'0 - Backlog'", "'1 - Newly Assigned'", "'2 - Not Started'", "'3 - Not Started Behind'", "'4 - In Progress On Time'", "'5 - In Progress Behind'", "'6 - Ready for Sign Off'", "'7 - Completed'", "'8 - Not Needed'", "'9 - On Going Work'"
     FROM status_piv
     UNION all
-    SELECT project_name,  max_date, ("'0 - Backlog'")*(-1), ("'1 - Newly Assigned'")*(-1), ("'2 - Not Started'")*(-1), ("'3 - Not Started Behind'")*(-1), ("'4 - In Progress On Time'")*(-1), ("'5 - In Progress Behind'")*(-1), ("'6 - Ready for Sign Off'")*(-1),
-    ("'7 - Completed'")*(-1), ("'8 - Not Needed'")*(-1), ("'9 - On Going Work'")*(-1)
+    SELECT project_name,  max_date, ZEROIFNULL(("'0 - Backlog'")*(-1)), ZEROIFNULL(("'1 - Newly Assigned'")*(-1)), ZEROIFNULL(("'2 - Not Started'")*(-1)), ZEROIFNULL(("'3 - Not Started Behind'")*(-1)), ZEROIFNULL(("'4 - In Progress On Time'")*(-1)), ZEROIFNULL(("'5 - In Progress Behind'")*(-1)),
+    ZEROIFNULL(("'6 - Ready for Sign Off'")*(-1)), ZEROIFNULL(("'7 - Completed'")*(-1)), ZEROIFNULL(("'8 - Not Needed'")*(-1)), ZEROIFNULL(("'9 - On Going Work'")*(-1))
     FROM lstat_piv
     )
     GROUP BY 1,2
@@ -142,7 +143,7 @@ view: pdt_liquid_status_change {
 
   measure: total_count {
     type: running_total
-    sql: ${0_backlog_current_count}+${1_newly_assigned_current_count}+${2_not_started_current_count}+${3_not_started_behind_current_count}+${4_in_progress_on_time_current_count}+${5_in_progress_behind_current_count}+${6_ready_for_sign_off_current_count}+${7_completed_current_count}+${8_not_needed_current_count}+${9_on_going_work_current_count}    ;;
+    sql: ${0_backlog_current_count}+${1_newly_assigned_current_count}+${2_not_started_current_count}+${3_not_started_behind_current_count}+${4_in_progress_on_time_current_count}+${5_in_progress_behind_current_count}+${6_ready_for_sign_off_current_count}+${7_completed_current_count}+${9_on_going_work_current_count}    ;;
   }
 
   measure: 0_backlog_current_count {
