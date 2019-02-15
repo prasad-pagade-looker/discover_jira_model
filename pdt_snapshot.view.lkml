@@ -1,4 +1,4 @@
-view: pdt_liquid_status_change {
+view: pdt_snapshot {
   derived_table: {
     sql: with data_pull AS (
     SELECT
@@ -52,14 +52,59 @@ view: pdt_liquid_status_change {
     SELECT project_name AS proj_dupe, max_date AS join_date, issue_key,
     ROW_NUMBER() OVER(PARTITION BY project_name ORDER BY max_date DESC) AS latest_row FROM data_pull
     Group BY 1,2,3
-    )
+    ),
+    sum_over AS(
     SELECT
-    project_name, issue_key, latest_row, max_date, backlog_move AS current_backlog, newly_move AS current_newly, not_started_move AS current_not_started, not_started_behind_move AS current_not_started_behind,  in_progress_move AS current_in_progress,
-    in_progress_behind_move AS current_in_progress_behind, ready_for_sign_move AS current_ready_for_sign_off, completed_move AS current_completed, not_needed_move AS current_not_needed, on_going_move AS current_on_going_work,
-    SUM(current_completed) OVER (PARTITION BY project_name ORDER BY max_date ASC) AS complete_sum
+    project_name, issue_key, latest_row, max_date, SUM(backlog_move) OVER (PARTITION by project_name ORDER BY max_date ASC) AS current_backlog, SUM(newly_move) OVER (PARTITION by project_name ORDER BY max_date ASC) AS current_newly,
+    SUM(not_started_move) OVER (PARTITION by project_name ORDER BY max_date ASC) AS current_not_started, SUM(not_started_behind_move) OVER (PARTITION by project_name ORDER BY max_date ASC) AS current_not_started_behind,
+    SUM(in_progress_move) OVER (PARTITION by project_name ORDER BY max_date ASC) AS current_in_progress, SUM(in_progress_behind_move) OVER (PARTITION by project_name ORDER BY max_date ASC) AS current_in_progress_behind,
+    SUM(ready_for_sign_move) OVER (PARTITION by project_name ORDER BY max_date ASC) AS current_ready_for_sign_off, SUM(completed_move) OVER (PARTITION by project_name ORDER BY max_date ASC) AS current_completed,
+    SUM(not_needed_move) OVER (PARTITION by project_name ORDER BY max_date ASC) AS current_not_needed, SUM(on_going_move) OVER (PARTITION by project_name ORDER BY max_date ASC) AS current_on_going_work
     FROM matrix_sum
     LEFT JOIN issue_join AS issue_join ON (issue_join.join_date) = max_date
+    ORDER BY project_name ASC
+    )
+    SELECT
+    project_name, issue_key, latest_row, max_date, current_backlog, current_newly, current_not_started, current_not_started_behind, current_in_progress, current_in_progress_behind, current_ready_for_sign_off, current_completed, current_not_needed, current_on_going_work
+    FROM sum_over
+    WHERE latest_row = 1
     ;;
+  }
+
+  dimension: project_name {
+    type: string
+    sql: ${TABLE}.project_name ;;
+  }
+
+  dimension: issue_key {
+    type: string
+    primary_key: yes
+    sql: ${TABLE}.issue_key ;;
+  }
+
+  dimension: last_status {
+    type: string
+    sql: ${TABLE}.last_status ;;
+  }
+
+  dimension: latest_row {
+    type: number
+    sql: ${TABLE}.latest_row ;;
+  }
+
+  dimension_group: status_change {
+    type: time
+    timeframes: [
+      raw,
+      millisecond,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.max_date ;;
   }
 
   dimension: 0_backlog {
@@ -112,95 +157,54 @@ view: pdt_liquid_status_change {
     sql: ${TABLE}.current_on_going_work ;;
   }
 
-  dimension: project_name {
-    type: string
-    sql: ${TABLE}.project_name ;;
+  measure: 0_backlog_snap {
+    type: number
+    sql: ${0_backlog} ;;
   }
 
-  dimension: issue_key {
-    type: string
-    primary_key: yes
-    sql: ${TABLE}.issue_key ;;
+  measure: 1_newly_assigned_snap {
+    type: number
+    sql: ${1_newly_assigned} ;;
   }
 
-  dimension: last_status {
-    type: string
-    sql: ${TABLE}.last_status ;;
+  measure: 2_not_started_snap {
+    type: number
+    sql: ${2_not_started}  ;;
   }
 
-  dimension_group: status_change {
-    type: time
-    timeframes: [
-      raw,
-      millisecond,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}.max_date ;;
+  measure: 3_not_started_behind_snap {
+    type: number
+    sql: ${3_not_started_behind} ;;
   }
 
-  measure: total_count {
-    type: running_total
-    sql: ${0_backlog_current_count}+${1_newly_assigned_current_count}+${2_not_started_current_count}+${3_not_started_behind_current_count}+${4_in_progress_on_time_current_count}+${5_in_progress_behind_current_count}+${6_ready_for_sign_off_current_count}+${7_completed_current_count}+${9_on_going_work_current_count}    ;;
+  measure: 4_in_progress_on_time_snap {
+    type: number
+    sql: ${4_in_progress_on_time} ;;
   }
 
-  measure: 0_backlog_current_count {
-    type: running_total
-    sql: ${0_backlog}    ;;
-  }
-
-  measure: 1_newly_assigned_current_count {
-    type: running_total
-    sql: ${1_newly_assigned}    ;;
-  }
-
-  measure: 2_not_started_current_count {
-    type: running_total
-    sql: ${2_not_started}    ;;
-  }
-
-  measure: 3_not_started_behind_current_count {
-    type: running_total
-    sql: ${3_not_started_behind}    ;;
-  }
-
-  measure: 4_in_progress_on_time_current_count {
-    type: running_total
-    sql: ${4_in_progress_on_time}    ;;
-  }
-
-  measure: 5_in_progress_behind_current_count {
-    type: running_total
+  measure: 5_in_progress_behind_snap {
+    type: number
     sql: ${5_in_progress_behind} ;;
   }
 
-  measure: 6_ready_for_sign_off_current_count {
-    type: running_total
-    sql: ${6_ready_for_sign_off}    ;;
+  measure: 6_ready_for_sign_off_snap {
+    type: number
+    sql: ${6_ready_for_sign_off} ;;
   }
 
-  measure: 7_completed_current_count {
-    type: running_total
-    sql: ${7_completed}    ;;
+  measure: 7_completed_snap {
+    type: number
+    sql: ${7_completed} ;;
   }
 
-  measure: 8_not_needed_current_count {
-    type: running_total
-    sql: ${8_not_needed}    ;;
+  measure: 8_not_needed_snap {
+    type: number
+    sql: ${8_not_needed} ;;
   }
 
-  measure: 9_on_going_work_current_count {
-    type: running_total
-    sql: ${9_on_going_work}    ;;
-  }
-
-  measure: completed_count {
-    type: max
-    sql: ${TABLE}.complete_sum    ;;
+  measure: 9_on_going_work_snap {
+    type: number
+    sql: ${9_on_going_work} ;;
   }
 
   # # You can specify the table name if it's different from the view name:
@@ -233,7 +237,7 @@ view: pdt_liquid_status_change {
   # }
 }
 
-# view: pdt_liquid_status_change {
+# view: pdt_snapshot {
 #   # Or, you could make this view a derived table, like this:
 #   derived_table: {
 #     sql: SELECT
