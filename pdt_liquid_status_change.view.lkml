@@ -54,7 +54,8 @@ view: pdt_liquid_status_change {
     )
     SELECT
     project_name, issue_key, max_date, backlog_move AS current_backlog, newly_move AS current_newly, not_started_move AS current_not_started, not_started_behind_move AS current_not_started_behind,  in_progress_move AS current_in_progress,
-    in_progress_behind_move AS current_in_progress_behind, ready_for_sign_move AS current_ready_for_sign_off, completed_move AS current_completed, not_needed_move AS current_not_needed, on_going_move AS current_on_going_work
+    in_progress_behind_move AS current_in_progress_behind, ready_for_sign_move AS current_ready_for_sign_off, completed_move AS current_completed, not_needed_move AS current_not_needed, on_going_move AS current_on_going_work,
+    SUM(current_completed) OVER (PARTITION BY project_name ORDER BY max_date ASC) AS complete_sum
     FROM matrix_sum
     LEFT JOIN issue_join AS issue_join ON (issue_join.join_date) = max_date
     ;;
@@ -194,6 +195,11 @@ view: pdt_liquid_status_change {
   measure: 9_on_going_work_current_count {
     type: running_total
     sql: ${9_on_going_work}    ;;
+  }
+
+  measure: completed_count {
+    type: max
+    sql: ${TABLE}.complete_sum    ;;
   }
 
   # # You can specify the table name if it's different from the view name:
