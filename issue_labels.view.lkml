@@ -18,6 +18,12 @@ view: issue_labels {
     sql: ${TABLE}.VALUE ;;
   }
 
+  measure: value_list {
+    type: string
+    sql: LISTAGG(${TABLE}.VALUE, ', ') ;;
+    drill_fields: [issue.id, issue.epic_name]
+  }
+
   measure: count {
     type: count
     drill_fields: [issue.id, issue.epic_name]

@@ -1,5 +1,5 @@
 #explore: issue_all_fields {}
-view: issue {
+view: issue_all_fields {
   sql_table_name: connectors.jira.issue ;;
 
   ####### Dimensions ##################
@@ -247,7 +247,7 @@ view: issue {
     link: {
       label: "Go to JIRA"
       icon_url: "https://discoverorg.atlassian.net/favicon-software.ico"
-      url: "https://discoverorg.atlassian.net/browse/{{issue.key._value}}"
+      url: "https://discoverorg.atlassian.net/browse/{{issue_all_fields.key._value}}"
     }
   }
 
@@ -675,7 +675,7 @@ view: issue {
     link: {
       label: "Go to JIRA"
       icon_url: "https://discoverorg.atlassian.net/favicon-software.ico"
-      url: "https://discoverorg.atlassian.net/browse/{{issue.key._value}}"
+      url: "https://discoverorg.atlassian.net/browse/{{issue_all_fields.key._value}}"
     }
   }
 
@@ -768,6 +768,23 @@ view: issue {
     type: number
     sql: ${TABLE}."TAG_CREATED_" ;;
   }
+
+  dimension: projected_date_of_completion {
+    type: date
+    sql: ${TABLE}."PROJECTED_DATE_OF_COMPLETION" ;;
+  }
+
+  dimension: number_of_lists {
+    type: date
+    sql: ${TABLE}."NUMBER_OF_LISTS" ;;
+  }
+
+  dimension: ticket_type {
+    type: number
+    sql: ${TABLE}."TICKET_TYPE" ;;
+  }
+
+
 
   ############## Special Dimension to sort the summary field ########
 
@@ -899,6 +916,33 @@ view: issue {
     drill_fields: [detail*]
   }
 
+  measure: count_issue_pbi {
+    type:  count
+    drill_fields: [id, key, summary, assignee, status.name]
+  }
+
+measure: total_time_spent {
+  type: sum
+  value_format_name: decimal_0
+  drill_fields: [id, key, summary, assignee, time_spent, status.name]
+  sql:  ${time_spent} / 3600 ;;
+}
+
+  measure: avg_time_spent {
+    type: average
+    value_format_name:  decimal_2
+    drill_fields: [id, key, summary, assignee, time_spent, status.name]
+    sql:  ${time_spent} / 3600 ;;
+  }
+
+  measure: total_requesters {
+    type: count_distinct
+    drill_fields: [original_requester, key, summary]
+    sql: ${original_requester} ;;
+
+  }
+
+
 # Additional field for a simple way to determine
   # if an issue is resolved
   dimension: is_issue_resolved {
@@ -959,6 +1003,47 @@ view: issue {
     description: "Use Time Bucket Dimension"
     type: string
     sql: listagg(${summary}, '  ||  ') ;;
+  }
+
+  dimension: days_to_complete {
+    type: number
+    sql: DATEDIFF(d,${current_date},${target_complete_date} ) ;;
+    value_format_name: decimal_0
+    drill_fields: [issue_all_fields.key, issue_all_fields.assignee, sprint.name]
+  }
+
+  measure: due_in_7_days {
+    type: count
+    filters: {
+      field: days_to_complete
+      value: ">0 AND <7"
+    }
+    filters: {
+      field: status.name
+      value: "-7 - Completed"
+    }
+    drill_fields: [issue_all_fields.key, issue_all_fields.assignee, target_complete_date, sprint.name, status.name]
+  }
+
+  measure: past_due {
+    type: count
+    filters: {
+      field: days_to_complete
+      value: "<-3"
+    }
+    filters: {
+      field: status.name
+      value: "-7 - Completed"
+    }
+    drill_fields: [issue_all_fields.key, issue_all_fields.assignee, target_complete_date, sprint.name, status.name]
+  }
+
+
+
+
+  dimension: current_date {
+    type: date
+    sql: select current_date ;;
   }
 
   set: detail {

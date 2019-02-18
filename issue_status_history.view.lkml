@@ -21,6 +21,13 @@
       sql: ${TABLE}.ISSUE_ID ;;
     }
 
+    dimension: primary_key {
+      type: string
+      primary_key: yes
+      hidden: yes
+      sql: ${TABLE}.ISSUE_ID || ${time_date} || ${status_id} ;;
+    }
+
     dimension: status_id {
       type: number
       # hidden: yes
