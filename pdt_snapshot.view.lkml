@@ -78,7 +78,7 @@ all_fridays AS (
     ),
 mega_join AS (
     SELECT
-        project_name AS project_dupe, issue_key, max_date, backlog_move, newly_move, not_started_move, not_started_behind_move,  in_progress_move, in_progress_behind_move, ready_for_sign_move, completed_move, not_needed_move, on_going_move
+        project_name, issue_key, max_date, backlog_move, newly_move, not_started_move, not_started_behind_move,  in_progress_move, in_progress_behind_move, ready_for_sign_move, completed_move, not_needed_move, on_going_move
     FROM matrix_sum
     LEFT JOIN issue_join AS issue_join ON (issue_join.join_date) = max_date
     ),
@@ -88,24 +88,23 @@ mega_union AS (
         SELECT * FROM mega_join
         UNION
         SELECT
-            'INFWEEKLY' AS project_dupe, 'WEEKLY' AS issue_key, every_friday AS max_date, 0 AS backlog_move, 0 AS newly_move, 0 AS not_started_move, 0 AS not_started_behind_move,  0 AS in_progress_move, 0 AS in_progress_behind_move, 0 AS ready_for_sign_move,
+            'INFWEEKLY' AS project_name, 'WEEKLY' AS issue_key, every_friday AS max_date, 0 AS backlog_move, 0 AS newly_move, 0 AS not_started_move, 0 AS not_started_behind_move,  0 AS in_progress_move, 0 AS in_progress_behind_move, 0 AS ready_for_sign_move,
             0 AS completed_move, 0 AS not_needed_move, 0 AS on_going_move
         FROM all_fridays
         )
     WHERE max_date <= CURRENT_DATE()
     )
     SELECT
-        project_dupe, issue_key, max_date, backlog_move AS current_backlog, newly_move AS current_newly, not_started_move AS current_not_started, not_started_behind_move AS current_not_started_behind,  in_progress_move AS current_in_progress,
+        project_name, issue_key, max_date, backlog_move AS current_backlog, newly_move AS current_newly, not_started_move AS current_not_started, not_started_behind_move AS current_not_started_behind,  in_progress_move AS current_in_progress,
         in_progress_behind_move AS current_in_progress_behind, ready_for_sign_move AS current_ready_for_sign_off, completed_move AS current_completed, not_needed_move AS current_not_needed, on_going_move AS current_on_going_work
     FROM mega_union
-    --WHERE project_name like 'INF%'
     ORDER BY max_date ASC
 ;;
   }
 
   dimension: project_name {
     type: string
-    sql: ${TABLE}.project_dupe ;;
+    sql: ${TABLE}.project_name ;;
   }
 
   dimension: issue_key {
