@@ -79,7 +79,7 @@ timespan AS (
        --    2. the global filter is applied after the seed is selected so the seed becomes the earliest possible friday in the database (unintentional)
        --    3. that friday and the following 155 are given the project name 'INFWEEKLY', so they are included in the query which breaks the filter (not desired)
        --  in other words; because of filter A, keyword B is necessary but B changes seed date C such that it invalidates A. to sidestep this paradox at the cost of scalability, a static filter was placed in this CTE (before seed date is selected) so that B does not alter C and
-       --  A functions as intended.
+       --  A functions as intended (when global and static filters are compatible).
 static_gen AS (
     SELECT seq4() AS weeks FROM table(generator(rowcount => 156))
     ), -- the desired result is a table of n length where n is the number of weeks elapsed in timespan. due to limitations of the read-only database, tables can't be created directly. instead, a simple, static sequence can be generated with a fixed length (of 3 years). Step 1/3.
