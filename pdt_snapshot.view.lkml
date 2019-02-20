@@ -1,6 +1,6 @@
 view: pdt_snapshot {
   derived_table: {
-    sql: with data_pull AS (
+    sql: WITH data_pull AS (
     SELECT
         project.name AS project_name,
         issue_all_fields.created AS null_max_date,
@@ -8,88 +8,110 @@ view: pdt_snapshot {
         issue_all_fields."KEY"  AS issue_key,
         IFNULL(status.name, '0 - Backlog') AS status_name,
         lag(status_name) OVER (partition by issue_key ORDER BY max_date ASC) AS last_status
-        FROM connectors.jira.issue  AS issue_all_fields
-        LEFT JOIN connectors.JIRA.ISSUE_STATUS_HISTORY  AS issue_status_history ON (issue_all_fields."ID") = issue_status_history.ISSUE_ID
-        LEFT JOIN connectors.JIRA.STATUS  AS status ON (ISSUE_STATUS_HISTORY."STATUS_ID") = status.ID
-        LEFT JOIN connectors.jira.project AS project on (ISSUE_ALL_FIELDS.project) = project.id
-      GROUP BY 1,2,4,5
-      ),
-    status_piv AS (
+    FROM connectors.jira.issue  AS issue_all_fields
+    LEFT JOIN connectors.JIRA.ISSUE_STATUS_HISTORY  AS issue_status_history ON (issue_all_fields."ID") = issue_status_history.ISSUE_ID
+    LEFT JOIN connectors.JIRA.STATUS  AS status ON (ISSUE_STATUS_HISTORY."STATUS_ID") = status.ID
+    LEFT JOIN connectors.jira.project AS project on (ISSUE_ALL_FIELDS.project) = project.id
+    GROUP BY 1,2,4,5
+    ),
+status_piv AS (
     SELECT
     * FROM data_pull
-    PIVOT
-    (
-            COUNT(issue_key)
-            FOR status_name IN
-            ('0 - Backlog', '1 - Newly Assigned', '2 - Not Started', '3 - Not Started Behind', '4 - In Progress On Time', '5 - In Progress Behind', '6 - Ready for Sign Off', '7 - Completed',  '8 - Not Needed', '9 - On Going Work')
-    )
+        PIVOT
+        (
+                COUNT(issue_key)
+                FOR status_name IN
+                ('0 - Backlog', '1 - Newly Assigned', '2 - Not Started', '3 - Not Started Behind', '4 - In Progress On Time', '5 - In Progress Behind', '6 - Ready for Sign Off', '7 - Completed',  '8 - Not Needed', '9 - On Going Work')
+        )
     ),
-    lstat_piv AS (
+lstat_piv AS (
     SELECT
     * FROM data_pull
-    PIVOT
-    (
-            COUNT(issue_key)
-            FOR last_status IN
-            ('0 - Backlog', '1 - Newly Assigned', '2 - Not Started', '3 - Not Started Behind', '4 - In Progress On Time', '5 - In Progress Behind', '6 - Ready for Sign Off', '7 - Completed',  '8 - Not Needed', '9 - On Going Work')
-    )
+        PIVOT
+        (
+                COUNT(issue_key)
+                FOR last_status IN
+                ('0 - Backlog', '1 - Newly Assigned', '2 - Not Started', '3 - Not Started Behind', '4 - In Progress On Time', '5 - In Progress Behind', '6 - Ready for Sign Off', '7 - Completed',  '8 - Not Needed', '9 - On Going Work')
+        )
     ),
-    matrix_sum AS (
-    SELECT project_name, max_date, SUM("'0 - Backlog'") AS backlog_move, SUM("'1 - Newly Assigned'") AS newly_move, SUM("'2 - Not Started'") AS not_started_move, SUM("'3 - Not Started Behind'") AS not_started_behind_move, SUM("'4 - In Progress On Time'") AS in_progress_move,
-    SUM("'5 - In Progress Behind'") AS in_progress_behind_move, SUM("'6 - Ready for Sign Off'") AS ready_for_sign_move, SUM("'7 - Completed'") AS completed_move, SUM("'8 - Not Needed'") AS not_needed_move, SUM("'9 - On Going Work'") AS on_going_move
+matrix_sum AS (
+    SELECT
+        project_name, max_date, SUM("'0 - Backlog'") AS backlog_move, SUM("'1 - Newly Assigned'") AS newly_move, SUM("'2 - Not Started'") AS not_started_move, SUM("'3 - Not Started Behind'") AS not_started_behind_move, SUM("'4 - In Progress On Time'") AS in_progress_move,
+        SUM("'5 - In Progress Behind'") AS in_progress_behind_move, SUM("'6 - Ready for Sign Off'") AS ready_for_sign_move, SUM("'7 - Completed'") AS completed_move, SUM("'8 - Not Needed'") AS not_needed_move, SUM("'9 - On Going Work'") AS on_going_move
     FROM
-    (
-    SELECT project_name,  max_date, "'0 - Backlog'", "'1 - Newly Assigned'", "'2 - Not Started'", "'3 - Not Started Behind'", "'4 - In Progress On Time'", "'5 - In Progress Behind'", "'6 - Ready for Sign Off'", "'7 - Completed'", "'8 - Not Needed'", "'9 - On Going Work'"
-    FROM status_piv
-    UNION all
-    SELECT project_name,  max_date, ZEROIFNULL(("'0 - Backlog'")*(-1)), ZEROIFNULL(("'1 - Newly Assigned'")*(-1)), ZEROIFNULL(("'2 - Not Started'")*(-1)), ZEROIFNULL(("'3 - Not Started Behind'")*(-1)), ZEROIFNULL(("'4 - In Progress On Time'")*(-1)), ZEROIFNULL(("'5 - In Progress Behind'")*(-1)),
-    ZEROIFNULL(("'6 - Ready for Sign Off'")*(-1)), ZEROIFNULL(("'7 - Completed'")*(-1)), ZEROIFNULL(("'8 - Not Needed'")*(-1)), ZEROIFNULL(("'9 - On Going Work'")*(-1))
-    FROM lstat_piv
-    )
+        (
+        SELECT
+            project_name,  max_date, "'0 - Backlog'", "'1 - Newly Assigned'", "'2 - Not Started'", "'3 - Not Started Behind'", "'4 - In Progress On Time'", "'5 - In Progress Behind'", "'6 - Ready for Sign Off'", "'7 - Completed'", "'8 - Not Needed'", "'9 - On Going Work'"
+        FROM status_piv
+        UNION all
+        SELECT
+            project_name,  max_date, ZEROIFNULL(("'0 - Backlog'")*(-1)), ZEROIFNULL(("'1 - Newly Assigned'")*(-1)), ZEROIFNULL(("'2 - Not Started'")*(-1)), ZEROIFNULL(("'3 - Not Started Behind'")*(-1)), ZEROIFNULL(("'4 - In Progress On Time'")*(-1)), ZEROIFNULL(("'5 - In Progress Behind'")*(-1)),
+            ZEROIFNULL(("'6 - Ready for Sign Off'")*(-1)), ZEROIFNULL(("'7 - Completed'")*(-1)), ZEROIFNULL(("'8 - Not Needed'")*(-1)), ZEROIFNULL(("'9 - On Going Work'")*(-1))
+        FROM lstat_piv
+        )
     GROUP BY 1,2
     ),
-    issue_join AS (
-    SELECT project_name AS proj_dupe, max_date AS join_date, issue_key,
-    ROW_NUMBER() OVER(PARTITION BY project_name ORDER BY max_date DESC) AS latest_row FROM data_pull
-    Group BY 1,2,3
-    ),
-    sum_over AS(
+issue_join AS (
     SELECT
-    project_name, issue_key, latest_row, max_date, SUM(backlog_move) OVER (PARTITION by project_name ORDER BY max_date ASC) AS current_backlog, SUM(newly_move) OVER (PARTITION by project_name ORDER BY max_date ASC) AS current_newly,
-    SUM(not_started_move) OVER (PARTITION by project_name ORDER BY max_date ASC) AS current_not_started, SUM(not_started_behind_move) OVER (PARTITION by project_name ORDER BY max_date ASC) AS current_not_started_behind,
-    SUM(in_progress_move) OVER (PARTITION by project_name ORDER BY max_date ASC) AS current_in_progress, SUM(in_progress_behind_move) OVER (PARTITION by project_name ORDER BY max_date ASC) AS current_in_progress_behind,
-    SUM(ready_for_sign_move) OVER (PARTITION by project_name ORDER BY max_date ASC) AS current_ready_for_sign_off, SUM(completed_move) OVER (PARTITION by project_name ORDER BY max_date ASC) AS current_completed,
-    SUM(not_needed_move) OVER (PARTITION by project_name ORDER BY max_date ASC) AS current_not_needed, SUM(on_going_move) OVER (PARTITION by project_name ORDER BY max_date ASC) AS current_on_going_work
+        max_date AS join_date, issue_key
+    FROM data_pull
+    Group BY 1,2
+    ),
+timespan AS (
+    SELECT
+        project_name, MIN(max_date) AS start_date, DATEDIFF(week, start_date, CURRENT_DATE()) AS total_weeks,
+        DATE_TRUNC('DAY',DATEADD('day', (5 - extract('dayofweek_iso', start_date)) , start_date)) AS first_friday
+    FROM data_pull
+    WHERE project_name like 'INF%'
+    GROUP BY 1
+    ),
+static_gen AS (
+    SELECT seq4() AS weeks FROM table(generator(rowcount => 156))
+    ),
+all_fridays AS (
+    SELECT
+        MIN(first_friday) AS earliest_friday, weeks, DATEADD('week', weeks, earliest_friday) AS every_friday
+    FROM timespan
+    CROSS JOIN static_gen
+    GROUP BY 2
+    ORDER BY weeks ASC
+    ),
+mega_join AS (
+    SELECT
+        project_name AS project_dupe, issue_key, max_date, backlog_move, newly_move, not_started_move, not_started_behind_move,  in_progress_move, in_progress_behind_move, ready_for_sign_move, completed_move, not_needed_move, on_going_move
     FROM matrix_sum
     LEFT JOIN issue_join AS issue_join ON (issue_join.join_date) = max_date
-    ORDER BY project_name ASC
+    ),
+mega_union AS (
+    SELECT * FROM
+        (
+        SELECT * FROM mega_join
+        UNION
+        SELECT
+            'INFWEEKLY' AS project_dupe, 'WEEKLY' AS issue_key, every_friday AS max_date, 0 AS backlog_move, 0 AS newly_move, 0 AS not_started_move, 0 AS not_started_behind_move,  0 AS in_progress_move, 0 AS in_progress_behind_move, 0 AS ready_for_sign_move,
+            0 AS completed_move, 0 AS not_needed_move, 0 AS on_going_move
+        FROM all_fridays
+        )
+    WHERE max_date <= CURRENT_DATE()
     )
     SELECT
-    project_name, issue_key, latest_row, max_date, current_backlog, current_newly, current_not_started, current_not_started_behind, current_in_progress, current_in_progress_behind, current_ready_for_sign_off, current_completed, current_not_needed, current_on_going_work
-    FROM sum_over
-    WHERE latest_row = 1
-    ;;
+        project_dupe, issue_key, max_date, backlog_move AS current_backlog, newly_move AS current_newly, not_started_move AS current_not_started, not_started_behind_move AS current_not_started_behind,  in_progress_move AS current_in_progress,
+        in_progress_behind_move AS current_in_progress_behind, ready_for_sign_move AS current_ready_for_sign_off, completed_move AS current_completed, not_needed_move AS current_not_needed, on_going_move AS current_on_going_work
+    FROM mega_union
+    --WHERE project_name like 'INF%'
+    ORDER BY max_date ASC
+;;
   }
 
   dimension: project_name {
     type: string
-    sql: ${TABLE}.project_name ;;
+    sql: ${TABLE}.project_dupe ;;
   }
 
   dimension: issue_key {
     type: string
     primary_key: yes
     sql: ${TABLE}.issue_key ;;
-  }
-
-  dimension: last_status {
-    type: string
-    sql: ${TABLE}.last_status ;;
-  }
-
-  dimension: latest_row {
-    type: number
-    sql: ${TABLE}.latest_row ;;
   }
 
   dimension_group: status_change {
@@ -158,52 +180,52 @@ view: pdt_snapshot {
   }
 
   measure: 0_backlog_snap {
-    type: number
+    type: running_total
     sql: ${0_backlog} ;;
   }
 
   measure: 1_newly_assigned_snap {
-    type: number
+    type: running_total
     sql: ${1_newly_assigned} ;;
   }
 
   measure: 2_not_started_snap {
-    type: number
+    type: running_total
     sql: ${2_not_started}  ;;
   }
 
   measure: 3_not_started_behind_snap {
-    type: number
+    type: running_total
     sql: ${3_not_started_behind} ;;
   }
 
   measure: 4_in_progress_on_time_snap {
-    type: number
+    type: running_total
     sql: ${4_in_progress_on_time} ;;
   }
 
   measure: 5_in_progress_behind_snap {
-    type: number
+    type: running_total
     sql: ${5_in_progress_behind} ;;
   }
 
   measure: 6_ready_for_sign_off_snap {
-    type: number
+    type: running_total
     sql: ${6_ready_for_sign_off} ;;
   }
 
   measure: 7_completed_snap {
-    type: number
+    type: running_total
     sql: ${7_completed} ;;
   }
 
   measure: 8_not_needed_snap {
-    type: number
+    type: running_total
     sql: ${8_not_needed} ;;
   }
 
   measure: 9_on_going_work_snap {
-    type: number
+    type: running_total
     sql: ${9_on_going_work} ;;
   }
 

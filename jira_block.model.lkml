@@ -108,7 +108,7 @@ explore: issue_all_fields {
   }
 
   join: pdt_snapshot {
-    type: left_outer
+    type: full_outer
     sql_on: ${issue_all_fields.key} = ${pdt_snapshot.issue_key} ;;
     relationship: one_to_many
   }
