@@ -71,13 +71,14 @@ timespan AS (
     WHERE project_name like 'INF%'
     GROUP BY 1
     ), -- returns the earliest date of an issue change of the selected projects, weeks elapsed to date, and the first friday in that timeframe.
-       -- the WHERE clause is an unfortunate, non-parameterized solution to a rather paradoxical side effect of this query:
-       --   in order for the fridays to show up in the query and allow us the weekly snapshot (half of the query's very purpose), it must contain 'INF' in the project name (A). ok...but we assign 'INFWEEKLY' to project name of every friday date generated (B) so that they are
-       --   included in the query and those fridays are seeded by the earliest issue change in any of the selected projects (C). With only a global filter, the query returns the first 156 fridays from the first issue change of the first project in existence (well, in the database).
-       --   this happens because the first friday in all fridays, by definition, becomes the first friday of any project that meets selection criteria but the global filter is applied after the seed is selected so the seed becomes the earliest possible friday (earliest project
-       --   in database) and because that friday is given the project name 'INFWEEKLY', it is included in the query.
-       --
-       --   in other words; because of the filter A, the keyword B is necessary but B changes C such that it invalidates A. to sidestep this paradox at the cost of scalability, a static filter was placed in this CTE so that B does not alter C.
+       --  the WHERE clause is an unfortunate, non-parameterized solution to a rather paradoxical side effect of this query:
+       --    in order for the fridays to show up in the query and allow us the weekly snapshot (half of the query's very purpose), it must contain 'INF' in the project name (A). ok but we assign 'INFWEEKLY' to project name of every friday date generated (B) so that they are
+       --    included in the query and those fridays are seeded by the earliest issue change in the projects that meet the filter's criterion (C). With only a global filter, the query returns 156 fridays from the first issue change in any project in existence (well, in the database).
+       --    this happens because:
+       --    1. the first friday in all_fridays, by definition, becomes the first friday of any project that meets selection criteria (intentional)
+       --    2. the global filter is applied after the seed is selected so the seed becomes the earliest possible friday in the database (unintentional)
+       --    3. that friday and the following 155 are given the project name 'INFWEEKLY', so they are included in the query which breaks the filter (not desired)
+       --  in other words; because of the filter A, the keyword B is necessary but B changes seed date C such that it invalidates A. to sidestep this paradox at the cost of scalability, a static filter was placed in this CTE so that B does not alter C and A functions as intended.
 static_gen AS (
     SELECT seq4() AS weeks FROM table(generator(rowcount => 156))
     ), -- the desired result is a table of n length where n is the number of weeks elapsed in timespan. due to limitations of the read-only database, tables can't be created directly. instead, a simple, static sequence can be generated with a fixed length (of 3 years). Step 1/3.
