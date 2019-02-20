@@ -1,5 +1,6 @@
 view: pdt_snapshot {
   derived_table: {
+    sql_trigger_value: SELECT HOUR(CURTIME());;
     sql: WITH data_pull AS (
     SELECT
         project.name AS project_name,
