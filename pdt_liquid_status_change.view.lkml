@@ -1,6 +1,8 @@
 view: pdt_liquid_status_change {
   derived_table: {
-    sql: with data_pull AS (
+    sql:
+       -- the purpose of this query is to provide looker with the necessary data in an appropriately digested format to show the current count of issues in all statuses for a selection of projects as a continuous function of time.
+with data_pull AS (
     SELECT
         project.name AS project_name,
         issue_all_fields.created AS null_max_date,
@@ -13,7 +15,9 @@ view: pdt_liquid_status_change {
         LEFT JOIN connectors.JIRA.STATUS  AS status ON (ISSUE_STATUS_HISTORY."STATUS_ID") = status.ID
         LEFT JOIN connectors.jira.project AS project on (ISSUE_ALL_FIELDS.project) = project.id
       GROUP BY 1,2,4,5
-      ),
+      ), -- brings in all necessary columns from the appropriate tables. this includes the project creation date for when the issue status change date is null (any issue that has been created but not changed will not be included in the query without this - EPICs usually
+         -- fall into this). the lag on status name gives the last status which is integral for the query to function (see second pivot below). partitioning by issue_key (instead of project_name) returns a null when an issue is created rather than the current status of
+         -- the issue preceding.
     status_piv AS (
     SELECT
     * FROM data_pull
@@ -23,7 +27,7 @@ view: pdt_liquid_status_change {
             FOR status_name IN
             ('0 - Backlog', '1 - Newly Assigned', '2 - Not Started', '3 - Not Started Behind', '4 - In Progress On Time', '5 - In Progress Behind', '6 - Ready for Sign Off', '7 - Completed',  '8 - Not Needed', '9 - On Going Work')
     )
-    ),
+    ),    -- pivots on current status and counts issues. it does not count when an issue leaves a status and a SUM OVER this table would only increase, showing the count of all issues that have had a given status (not a current count).
     lstat_piv AS (
     SELECT
     * FROM data_pull
@@ -33,7 +37,7 @@ view: pdt_liquid_status_change {
             FOR last_status IN
             ('0 - Backlog', '1 - Newly Assigned', '2 - Not Started', '3 - Not Started Behind', '4 - In Progress On Time', '5 - In Progress Behind', '6 - Ready for Sign Off', '7 - Completed',  '8 - Not Needed', '9 - On Going Work')
     )
-    ),
+    ),    -- pivots on last status and counts issues. it only counts when an issue leaves a status and a SUM OVER this table would only increase, showing the count of all issues that have left a given status (not a current count).
     matrix_sum AS (
     SELECT project_name, max_date, SUM("'0 - Backlog'") AS backlog_move, SUM("'1 - Newly Assigned'") AS newly_move, SUM("'2 - Not Started'") AS not_started_move, SUM("'3 - Not Started Behind'") AS not_started_behind_move, SUM("'4 - In Progress On Time'") AS in_progress_move,
     SUM("'5 - In Progress Behind'") AS in_progress_behind_move, SUM("'6 - Ready for Sign Off'") AS ready_for_sign_move, SUM("'7 - Completed'") AS completed_move, SUM("'8 - Not Needed'") AS not_needed_move, SUM("'9 - On Going Work'") AS on_going_move
@@ -51,7 +55,8 @@ view: pdt_liquid_status_change {
     issue_join AS (
     SELECT max_date AS join_date, issue_key FROM data_pull
     Group BY 1,2
-    )
+    )    -- this is where the magic happens. by summing corresponding cells in both matrices (and multiplying the latter pivot by a negative unit scalar), the resulting table is a changelog of activity for each status. A SUM OVER this table returns only a count of issues
+         -- currently in a given status. now that's algebraic!
     SELECT
     project_name, issue_key, max_date, backlog_move AS current_backlog, newly_move AS current_newly, not_started_move AS current_not_started, not_started_behind_move AS current_not_started_behind,  in_progress_move AS current_in_progress,
     in_progress_behind_move AS current_in_progress_behind, ready_for_sign_move AS current_ready_for_sign_off, completed_move AS current_completed, not_needed_move AS current_not_needed, on_going_move AS current_on_going_work

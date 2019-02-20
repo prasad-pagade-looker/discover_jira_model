@@ -1,7 +1,9 @@
 view: pdt_snapshot {
   derived_table: {
     sql_trigger_value: SELECT HOUR(CURTIME());;
-    sql: WITH data_pull AS (
+    sql:
+       -- the purpose of this query is to provide looker with the necessary data in an appropriately digested format to show the current count of issues in all statuses for a selection of projects as a continuous function of time and as a weekly snapshot.
+WITH data_pull AS (
     SELECT
         project.name AS project_name,
         issue_all_fields.created AS null_max_date,
@@ -14,7 +16,9 @@ view: pdt_snapshot {
     LEFT JOIN connectors.JIRA.STATUS  AS status ON (ISSUE_STATUS_HISTORY."STATUS_ID") = status.ID
     LEFT JOIN connectors.jira.project AS project on (ISSUE_ALL_FIELDS.project) = project.id
     GROUP BY 1,2,4,5
-    ),
+    ), -- brings in all necessary columns from the appropriate tables. this includes the project creation date for when the issue status change date is null (any issue that has been created but not changed will not be included in the query without this - EPICs usually
+       -- fall into this). the lag on status name gives the last status which is integral for the query to function (see second pivot below). partitioning by issue_key (instead of project_name) returns a null when an issue is created rather than the current status of
+       -- the issue preceding.
 status_piv AS (
     SELECT
     * FROM data_pull
@@ -24,7 +28,7 @@ status_piv AS (
                 FOR status_name IN
                 ('0 - Backlog', '1 - Newly Assigned', '2 - Not Started', '3 - Not Started Behind', '4 - In Progress On Time', '5 - In Progress Behind', '6 - Ready for Sign Off', '7 - Completed',  '8 - Not Needed', '9 - On Going Work')
         )
-    ),
+    ), -- pivots on current status and counts issues. it does not count when an issue leaves a status and a SUM OVER this table would only increase, showing the count of all issues that have had a given status (not a current count).
 lstat_piv AS (
     SELECT
     * FROM data_pull
@@ -34,7 +38,7 @@ lstat_piv AS (
                 FOR last_status IN
                 ('0 - Backlog', '1 - Newly Assigned', '2 - Not Started', '3 - Not Started Behind', '4 - In Progress On Time', '5 - In Progress Behind', '6 - Ready for Sign Off', '7 - Completed',  '8 - Not Needed', '9 - On Going Work')
         )
-    ),
+    ), -- pivots on last status and counts issues. it only counts when an issue leaves a status and a SUM OVER this table would only increase, showing the count of all issues that have left a given status (not a current count).
 matrix_sum AS (
     SELECT
         project_name, max_date, SUM("'0 - Backlog'") AS backlog_move, SUM("'1 - Newly Assigned'") AS newly_move, SUM("'2 - Not Started'") AS not_started_move, SUM("'3 - Not Started Behind'") AS not_started_behind_move, SUM("'4 - In Progress On Time'") AS in_progress_move,
@@ -46,18 +50,19 @@ matrix_sum AS (
         FROM status_piv
         UNION all
         SELECT
-            project_name,  max_date, ZEROIFNULL(("'0 - Backlog'")*(-1)), ZEROIFNULL(("'1 - Newly Assigned'")*(-1)), ZEROIFNULL(("'2 - Not Started'")*(-1)), ZEROIFNULL(("'3 - Not Started Behind'")*(-1)), ZEROIFNULL(("'4 - In Progress On Time'")*(-1)), ZEROIFNULL(("'5 - In Progress Behind'")*(-1)),
-            ZEROIFNULL(("'6 - Ready for Sign Off'")*(-1)), ZEROIFNULL(("'7 - Completed'")*(-1)), ZEROIFNULL(("'8 - Not Needed'")*(-1)), ZEROIFNULL(("'9 - On Going Work'")*(-1))
+            project_name,  max_date, ZEROIFNULL(("'0 - Backlog'")*(-1)), ZEROIFNULL(("'1 - Newly Assigned'")*(-1)), ZEROIFNULL(("'2 - Not Started'")*(-1)), ZEROIFNULL(("'3 - Not Started Behind'")*(-1)), ZEROIFNULL(("'4 - In Progress On Time'")*(-1)),
+            ZEROIFNULL(("'5 - In Progress Behind'")*(-1)), ZEROIFNULL(("'6 - Ready for Sign Off'")*(-1)), ZEROIFNULL(("'7 - Completed'")*(-1)), ZEROIFNULL(("'8 - Not Needed'")*(-1)), ZEROIFNULL(("'9 - On Going Work'")*(-1))
         FROM lstat_piv
         )
     GROUP BY 1,2
-    ),
+    ), -- this is where the magic happens. by summing corresponding cells in both matrices (and multiplying the latter pivot by a negative unit scalar), the resulting table is a changelog of activity for each status. A SUM OVER this table returns only a count of issues
+       -- currently in a given status. now that's algebraic!
 issue_join AS (
     SELECT
         max_date AS join_date, issue_key
     FROM data_pull
     Group BY 1,2
-    ),
+    ), -- prepares the issue key to be joined back into the table as it was lost during the pivots' aggregation over it.
 timespan AS (
     SELECT
         project_name, MIN(max_date) AS start_date, DATEDIFF(week, start_date, CURRENT_DATE()) AS total_weeks,
@@ -65,10 +70,14 @@ timespan AS (
     FROM data_pull
     WHERE project_name like 'INF%'
     GROUP BY 1
-    ),
+    ), -- returns the earliest date of an issue change of the selected projects, weeks elapsed to date, and the first friday in that timeframe. the WHERE clause is an unfortunate, non-parameterized solution to a rather paradoxical side effect of this query:
+       -- in order for the fridays to show up in the query and allow us the weekly snapshot (part of the queries very purpose), it must contain 'INF' in the project name (A). ok...but we assign 'INFWEEKLY' to project name of every friday date generated (B) so that they are
+       -- included in the query and those fridays are seeded by the earliest issue change in any of the selected projects (C). With only a global filter, the query returns the first 156 fridays from the first issue change of the first project in existence (well, in the database).
+       -- this happens because the first friday in all fridays, by definition, becomes the first friday of any project that meets selection criteria but the global filter is applied after the seed is selected so it uses the earliest possible friday (earliest project in database).
+       -- in other words; because of the filter A, B the keyword is necessary but B changes C such that it invalidates A. to sidestep this paradox at the cost of scalability, a static filter was placed in this CTE so that B does not alter C.
 static_gen AS (
     SELECT seq4() AS weeks FROM table(generator(rowcount => 156))
-    ),
+    ), -- the desired result is a table of n length where n is the number of weeks elapsed in timespan. due to limitations of the read-only database, tables can't be created directly. instead, a simple, static sequence can be generated with a fixed length (of 3 years). Step 1/3.
 all_fridays AS (
     SELECT
         MIN(first_friday) AS earliest_friday, weeks, DATEADD('week', weeks, earliest_friday) AS every_friday
@@ -76,13 +85,13 @@ all_fridays AS (
     CROSS JOIN static_gen
     GROUP BY 2
     ORDER BY weeks ASC
-    ),
+    ), -- uses static table and the first friday to generate dates for the 155 fridays following first. as every_friday is an aggregate function, it can't be used in a WHERE clause to truncate to just fridays in timespan (see mega_union for said truncation). Step 2/3.
 mega_join AS (
     SELECT
         project_name, issue_key, max_date, backlog_move, newly_move, not_started_move, not_started_behind_move,  in_progress_move, in_progress_behind_move, ready_for_sign_move, completed_move, not_needed_move, on_going_move
     FROM matrix_sum
     LEFT JOIN issue_join AS issue_join ON (issue_join.join_date) = max_date
-    ),
+    ), -- joins issue key into matrix_sum
 mega_union AS (
     SELECT * FROM
         (
@@ -94,7 +103,7 @@ mega_union AS (
         FROM all_fridays
         )
     WHERE max_date <= CURRENT_DATE()
-    )
+    ) -- unions the generated friday dates (and dummy values for remaining columns) with the current status table. an union was used to sidestep the inability to use INSERTs. Step 3/3.
     SELECT
         project_name, issue_key, max_date, backlog_move AS current_backlog, newly_move AS current_newly, not_started_move AS current_not_started, not_started_behind_move AS current_not_started_behind,  in_progress_move AS current_in_progress,
         in_progress_behind_move AS current_in_progress_behind, ready_for_sign_move AS current_ready_for_sign_off, completed_move AS current_completed, not_needed_move AS current_not_needed, on_going_move AS current_on_going_work
