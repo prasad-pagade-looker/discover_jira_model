@@ -1,7 +1,8 @@
 view: pdt_liquid_status_change {
   derived_table: {
     sql:
-       -- the purpose of this query is to provide looker with the necessary data in an appropriately digested format to show the current count of issues in all statuses for a selection of projects as a continuous function of time.
+       -- the purpose of this query is to provide looker with the necessary data in an appropriately digested format to show the current count of issues in all statuses for a selection of projects as a continuous function of time. the query uses several
+       -- common table expressions (CTEs) to perform iterative processing on a given dataset. the data is pivoted on status to allow for a SUM OVER to give cumulative, current (at each row) counts of issues in all statuses.
 with data_pull AS (
     SELECT
         project.name AS project_name,

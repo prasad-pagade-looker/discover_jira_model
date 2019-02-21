@@ -2,7 +2,10 @@ view: pdt_snapshot {
   derived_table: {
     sql_trigger_value: SELECT HOUR(CURTIME());;
     sql:
-       -- the purpose of this query is to provide looker with the necessary data in an appropriately digested format to show the current count of issues in all statuses for a selection of projects as a continuous function of time and as a weekly snapshot.
+       -- the purpose of this query is to provide looker with the necessary data in an appropriately digested format to show the current count of issues in all statuses for a selection of projects as a continuous function of time and as a weekly snapshot. the query uses several
+       -- common table expressions (CTEs) to perform iterative processing on a given dataset. for the first desired result, the data is pivoted on status to allow for a SUM OVER to give cumulative, current (at each row) counts of issues in all statuses. for the second desired
+       -- result, an effectively variable length table with dates of all fridays in the selected projects is generated and unioned to the first result to allow for a weekly snapshot of cumulative counts. due to a few limitations (noted below), the creation of this friday table
+       -- was unothodox.
 WITH data_pull AS (
     SELECT
         project.name AS project_name,
@@ -82,7 +85,8 @@ timespan AS (
        --  A functions as intended (when global and static filters are compatible).
 static_gen AS (
     SELECT seq4() AS weeks FROM table(generator(rowcount => 156))
-    ), -- the desired result is a table of n length where n is the number of weeks elapsed in timespan. due to limitations of the read-only database, tables can't be created directly. instead, a simple, static sequence can be generated with a fixed length (of 3 years). Step 1/3.
+    ), -- the desired result is a table of n length where n is the number of weeks elapsed in timespan. due to limitations of the read-only database and snowflake's lack of recursion support, tables can't be created directly. instead, a simple, static sequence can be
+       -- generated with a fixed length (of 3 years). Step 1/3.
 all_fridays AS (
     SELECT
         MIN(first_friday) AS earliest_friday, weeks, DATEADD('week', weeks, earliest_friday) AS every_friday
@@ -96,7 +100,7 @@ mega_join AS (
         project_name, issue_key, max_date, backlog_move, newly_move, not_started_move, not_started_behind_move,  in_progress_move, in_progress_behind_move, ready_for_sign_move, completed_move, not_needed_move, on_going_move
     FROM matrix_sum
     LEFT JOIN issue_join AS issue_join ON (issue_join.join_date) = max_date
-    ), -- joins issue key into matrix_sum
+    ), -- joins issue key into matrix_sum.
 mega_union AS (
     SELECT * FROM
         (
