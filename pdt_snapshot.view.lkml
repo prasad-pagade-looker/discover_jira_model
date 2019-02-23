@@ -89,7 +89,7 @@ static_gen AS (
        -- generated with a fixed length (of 3 years). Step 1/3.
 all_fridays AS (
     SELECT
-        MIN(first_friday) AS earliest_friday, weeks, DATEADD('week', weeks, earliest_friday) AS every_friday
+        MIN(first_friday) AS earliest_friday, weeks, DATEADD('week', weeks, earliest_friday) AS every_friday, DATEADD('hour', 19, every_friday) AS friday_evenings
     FROM timespan
     CROSS JOIN static_gen
     GROUP BY 2
@@ -107,11 +107,11 @@ mega_union AS (
         SELECT * FROM mega_join
         UNION
         SELECT
-            'INFWEEKLY' AS project_name, 'WEEKLY' AS issue_key, every_friday AS max_date, 0 AS backlog_move, 0 AS newly_move, 0 AS not_started_move, 0 AS not_started_behind_move,  0 AS in_progress_move, 0 AS in_progress_behind_move, 0 AS ready_for_sign_move,
+            'INFWEEKLY' AS project_name, 'WEEKLY' AS issue_key, friday_evenings AS max_date, 0 AS backlog_move, 0 AS newly_move, 0 AS not_started_move, 0 AS not_started_behind_move,  0 AS in_progress_move, 0 AS in_progress_behind_move, 0 AS ready_for_sign_move,
             0 AS completed_move, 0 AS not_needed_move, 0 AS on_going_move
         FROM all_fridays
         )
-    WHERE max_date <= CURRENT_DATE()
+    WHERE max_date <= CURRENT_DATE()+1
     ) -- unions the generated friday dates (and dummy values for remaining columns) with the current status table. an union was used to sidestep the inability to use INSERTs. Step 3/3.
     SELECT
         project_name, issue_key, max_date, backlog_move AS current_backlog, newly_move AS current_newly, not_started_move AS current_not_started, not_started_behind_move AS current_not_started_behind,  in_progress_move AS current_in_progress,
